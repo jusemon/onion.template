@@ -1,0 +1,9 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Juan S Montoya",
+    "classifications": [ "Common", "WebApi" ],
+    "identity": "Onion.Template",
+    "name": "Onion Template",
+    "shortName": "onion",
+    "sourceName": "Company.Proyect"
+}

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentEmail.Core" Version="2.5.1" />
+    <PackageReference Include="FluentEmail.Razor" Version="2.5.2" />
+    <PackageReference Include="FluentEmail.Smtp" Version="2.5.2" />
+    <PackageReference Include="FluentValidation" Version="8.4.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\3.Infra\Company.Proyect.Infra.Utils\Company.Proyect.Infra.Utils.csproj" />
+    <ProjectReference Include="..\Company.Proyect.Domain.Interfaces\Company.Proyect.Domain.Interfaces.csproj" />
+  </ItemGroup>
+</Project>

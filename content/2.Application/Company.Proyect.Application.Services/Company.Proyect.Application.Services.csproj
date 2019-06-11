@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\1.Domain\Company.Proyect.Domain.Interfaces\Company.Proyect.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\Company.Proyect.Application.Interfaces\Company.Proyect.Application.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
