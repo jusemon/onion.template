@@ -3,12 +3,10 @@
     using Domain.Entities.Config;
     using Domain.Interfaces.Email;
     using Domain.Interfaces.Generics.Base;
-    using Domain.Interfaces.Security.User;
     using Domain.Services.Email;
     using Domain.Services.Generics.Base;
-    using Domain.Services.Security.User;
+    using LightInject;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Configure Services Extensions class. 
@@ -20,21 +18,21 @@
         /// Configures the service.
         /// </summary>
         /// <param name="services">The services.</param>
-        public static void ConfigureService(this IServiceCollection services)
+        public static void ConfigureService(this IServiceContainer services)
         {
-            services.AddSingleton((provider) =>
+            services.Register((provider) =>
             {
-                var configuration = provider.GetService<IConfiguration>();
+                var configuration = provider.GetInstance<IConfiguration>();
                 return configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
-            });
-            services.AddSingleton((provider) =>
+            }, new PerRequestLifeTime());
+            services.Register((provider) =>
             {
-                var configuration = provider.GetService<IConfiguration>();
+                var configuration = provider.GetInstance<IConfiguration>();
                 return configuration.GetSection(nameof(EmailConfig)).Get<EmailConfig>();
-            });
-            services.AddTransient(typeof(IBaseService<>), typeof(BaseService<>));
-            services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IUserService, UserService>();
+            }, new PerRequestLifeTime());
+            services.RegisterAssembly(
+                typeof(BaseService<>).Assembly, (a, b) => ConfigureServicesHelper.ShouldRegister(a, b, typeof(IBaseService<>)));
+            services.Register<IEmailService, EmailService>(new PerRequestLifeTime());
         }
     }
 }

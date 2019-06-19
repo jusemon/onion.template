@@ -2,6 +2,7 @@
 {
     using Domain.Entities.Config;
     using Infra.IoC.ConfigureServicesExtensions;
+    using LightInject;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -45,15 +46,9 @@
         /// <param name="services">The services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            var authConfig = Configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.ConfigureRepository();
-            services.ConfigureService();
-            services.ConfigureApplication();
-
-            var provider = services.BuildServiceProvider();
-            var authConfig = provider.GetService<AuthConfig>();
-
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -88,6 +83,17 @@
                     { authConfig.Type, new string [0] }
                 });
             });
+        }
+
+        /// <summary>
+        /// Configures the container.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public void ConfigureContainer(IServiceContainer container)
+        {
+            container.ConfigureRepository();
+            container.ConfigureService();
+            container.ConfigureApplication();
         }
 
         /// <summary>

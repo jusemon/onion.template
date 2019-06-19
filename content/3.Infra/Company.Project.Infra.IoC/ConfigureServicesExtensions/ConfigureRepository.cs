@@ -4,8 +4,8 @@
     using Domain.Entities.Config;
     using Domain.Interfaces.Data;
     using Domain.Interfaces.Generics.Base;
+    using LightInject;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Configure Services Extensions class. 
@@ -16,15 +16,16 @@
         /// Configures the repository.
         /// </summary>
         /// <param name="services">The services.</param>
-        public static void ConfigureRepository(this IServiceCollection services)
+        public static void ConfigureRepository(this IServiceContainer services)
         {
-            services.AddSingleton((provider) =>
+            services.Register((provider) =>
             {
-                var configuration = provider.GetService<IConfiguration>();
+                var configuration = provider.GetInstance<IConfiguration>();
                 return configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
-            });
-            services.AddTransient<IDbFactory, SQLiteFactory>();
-            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            }, new PerRequestLifeTime());
+            services.Register<IDbFactory, SQLiteFactory>(new PerRequestLifeTime());
+            services.RegisterAssembly(
+                typeof(BaseRepository<>).Assembly, (a, b) => ConfigureServicesHelper.ShouldRegister(a, b, typeof(IBaseRepository<>)));
         }
     }
 }
