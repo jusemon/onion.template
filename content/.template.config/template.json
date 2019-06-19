@@ -1,9 +1,22 @@
 {
     "$schema": "http://json.schemastore.org/template",
     "author": "Juan S Montoya",
-    "classifications": [ "Common", "WebApi" ],
+    "tags": { "language": "C#" },
+    "classifications": [ "Web", "WebApi" ],
     "identity": "Onion.Template",
     "name": "Onion Template",
     "shortName": "onion",
-    "sourceName": "Company.Proyect"
+    "sourceName": "Company.Project",
+    "symbols": {
+        "title": {
+            "type": "parameter",
+            "defaultValue": "App",
+            "replaces": "AppTitle"
+        },
+        "company": {
+            "type": "parameter",
+            "defaultValue": "Company",
+            "replaces": "AppCompany"
+        }
+    }
 }
