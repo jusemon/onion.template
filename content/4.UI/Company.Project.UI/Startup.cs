@@ -1,5 +1,6 @@
 ﻿namespace Company.Project.UI
 {
+    using Company.Project.Infra.Data.Contexts;
     using Domain.Entities.Config;
     using Infra.IoC.ConfigureServicesExtensions;
     using LightInject;
@@ -7,6 +8,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
@@ -47,8 +49,10 @@
         public void ConfigureServices(IServiceCollection services)
         {
             var authConfig = Configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
+            var dbConfig = Configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDbContext<SecurityContext>(options=>options.UseSqlite(dbConfig.ConnectionString));
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

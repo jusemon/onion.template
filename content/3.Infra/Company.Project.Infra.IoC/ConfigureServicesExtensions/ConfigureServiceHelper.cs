@@ -13,12 +13,12 @@
         /// </summary>
         /// <param name="a">a.</param>
         /// <param name="b">The b.</param>
-        /// <param name="baseType">Type of the base.</param>
+        /// <param name="baseinterface">Type of the base.</param>
         /// <returns></returns>
-        public static bool ShouldRegister(Type a, Type b, Type baseType)
+        public static bool ShouldRegister(Type a, Type b, Type baseinterface)
         {
             if (!a.IsInterface || !b.IsClass) return false;
-            bool ImplementsBaseService(Type i) => i.IsGenericType && i.GetGenericTypeDefinition() == baseType;
+            bool ImplementsBaseService(Type i) => i.IsGenericType && i.GetGenericTypeDefinition() == baseinterface;
             return ImplementsBaseService(a) || a.GetInterfaces().Any(ImplementsBaseService);
         }
     }

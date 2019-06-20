@@ -5,7 +5,9 @@
     using Domain.Entities.Generics;
     using Domain.Entities.Generics.Base;
     using Microsoft.AspNetCore.Mvc;
+    using System;
     using System.Collections.Generic;
+    using System.Security.Claims;
     using UI.ValidateClaim;
 
     /// <summary>
@@ -38,6 +40,7 @@
         [ValidateClaim("[controller].create")]
         public virtual ActionResult<Response<bool>> Create([FromBody] TEntity entity)
         {
+            entity.CreatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier));
             return this.baseApplication.Create(entity);
         }
 
@@ -100,6 +103,7 @@
         [ValidateClaim("[controller].update")]
         public virtual ActionResult<Response<bool>> Update([FromBody] TEntity entity)
         {
+            entity.LastUpdatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             return this.baseApplication.Update(entity);
         }
     }

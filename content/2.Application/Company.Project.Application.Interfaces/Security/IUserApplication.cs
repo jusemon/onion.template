@@ -7,15 +7,15 @@
     /// <summary>
     /// User Application interface. 
     /// </summary>
-    /// <seealso cref="Company.Project.Application.Interfaces.Generics.Base.IBaseApplication{Company.Project.Domain.Entities.Security.User}" />
-    public interface IUserApplication : IBaseApplication<User>
+    /// <seealso cref="Company.Project.Application.Interfaces.Generics.Base.IBaseApplication{Company.Project.Domain.Entities.Security.Users}" />
+    public interface IUserApplication : IBaseApplication<Users>
     {
         /// <summary>
         /// Logins the specified user.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Response<User> Login(User user);
+        Response<Users> Login(Users user);
 
         /// <summary>
         /// Sends the recovery email.
@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Response<User> CheckRecoveryToken(User user);
+        Response<Users> CheckRecoveryToken(Users user);
 
         /// <summary>
         /// Updates the password.
@@ -38,6 +38,6 @@
         /// <param name="user">The user.</param>
         /// <param name="uri">The URI.</param>
         /// <returns></returns>
-        Response<User> UpdatePassword(User user, string uri);
+        Response<Users> UpdatePassword(Users user, string uri);
     }
 }

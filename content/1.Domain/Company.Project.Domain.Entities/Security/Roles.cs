@@ -1,12 +1,14 @@
 ﻿namespace Company.Project.Domain.Entities.Security
 {
+    using Dapper.Contrib.Extensions;
     using Generics.Base;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Role class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    public class Role : BaseEntity
+    public class Roles : BaseEntity
     {
         /// <summary>
         /// Gets or sets the name.
@@ -23,5 +25,17 @@
         ///   <c>true</c> if this instance is admin; otherwise, <c>false</c>.
         /// </value>
         public bool IsAdmin { get; set; }
+
+        /// <summary>
+        /// Gets or sets the permissions.
+        /// </summary>
+        /// <value>
+        /// The permissions.
+        /// </value>
+        [Computed]
+        public ICollection<Permissions> Permissions { get; set; }
+
+        [Computed]
+        public ICollection<Users> Users { get; set; }
     }
 }

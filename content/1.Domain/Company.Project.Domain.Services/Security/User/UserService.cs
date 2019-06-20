@@ -19,24 +19,24 @@
     /// <summary>
     /// User Service class. 
     /// </summary>
-    /// <seealso cref="Company.Project.Domain.Services.Generics.Base.BaseService{Company.Project.Domain.Entities.Security.User}" />
+    /// <seealso cref="Company.Project.Domain.Services.Generics.Base.BaseService{Company.Project.Domain.Entities.Security.Users}" />
     /// <seealso cref="Company.Project.Domain.Interfaces.Security.User.IUserService" />
-    public class UserService : BaseService<User>, IUserService
+    public class UserService : BaseService<Users>, IUserService
     {
         /// <summary>
         /// The base repository
         /// </summary>
-        private readonly IBaseRepository<User> baseRepository;
+        private readonly IBaseRepository<Users> baseRepository;
 
         /// <summary>
         /// The permission repository
         /// </summary>
-        private readonly IBaseRepository<Permission> permissionRepository;
+        private readonly IBaseRepository<Permissions> permissionRepository;
 
         /// <summary>
         /// The action repository
         /// </summary>
-        private readonly IBaseRepository<Entities.Security.Action> actionRepository;
+        private readonly IBaseRepository<Entities.Security.Actions> actionRepository;
 
         /// <summary>
         /// The authentication configuration
@@ -51,9 +51,9 @@
         /// <param name="actionRepository">The action repository.</param>
         /// <param name="authConfig">The authentication configuration.</param>
         public UserService(
-            IBaseRepository<User> baseRepository,
-            IBaseRepository<Permission> permissionRepository,
-            IBaseRepository<Entities.Security.Action> actionRepository,
+            IBaseRepository<Users> baseRepository,
+            IBaseRepository<Permissions> permissionRepository,
+            IBaseRepository<Actions> actionRepository,
             AuthConfig authConfig) : base(baseRepository)
         {
             this.baseRepository = baseRepository;
@@ -66,7 +66,7 @@
         /// Reads all.
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<User> Read()
+        public override IEnumerable<Users> Read()
         {
             return base.Read().Select(u=> {
                 u.Password = string.Empty;
@@ -79,7 +79,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public override User Read(int id)
+        public override Users Read(int id)
         {
             var user = base.Read(id);
             user.Password = string.Empty;
@@ -94,7 +94,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public override Page<User> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
+        public override Page<Users> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
         {
             var page = base.Read(pageIndex, pageSize, sortBy, isAsc);
             page.Items = page.Items.Select(u => {
@@ -109,7 +109,7 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public override bool Create(User entity)
+        public override bool Create(Users entity)
         {
             entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)), this.authConfig.Key);
             var res = base.Create(entity);
@@ -122,7 +122,7 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public override bool Update(User entity)
+        public override bool Update(Users entity)
         {
             if (!string.IsNullOrWhiteSpace(entity.Password))
             {
@@ -143,7 +143,7 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <exception cref="AppException">Usuario o contraseña incorrectos.</exception>
-        public void Login(User user)
+        public void Login(Users user)
         {
             var result = this.baseRepository.Read((u) => u.Username.ToUpperInvariant() == user.Username.ToUpperInvariant()).FirstOrDefault();
             var pass = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(user.Password)), this.authConfig.Key);
@@ -164,9 +164,9 @@
         /// </summary>
         /// <param name="email">The email.</param>
         /// <returns></returns>
-        public User GetUserWithRecoveryToken(string email)
+        public Users GetUserWithRecoveryToken(string email)
         {
-            var user = new User { Email = email };
+            var user = new Users { Email = email };
             user = this.baseRepository.Read(u => email.ToUpperInvariant()?.Trim() == u.Email?.ToUpperInvariant()?.Trim()).FirstOrDefault();
             if (user == null)
             {
@@ -186,7 +186,7 @@
         /// or
         /// El enlace de recuperación ha expirado.
         /// </exception>
-        public User CheckRecoveryToken(User user)
+        public Users CheckRecoveryToken(Users user)
         {
             try
             {
@@ -229,7 +229,7 @@
         /// <param name="secretKey">The secret key.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns></returns>
-        private string GetToken(User user, string secretKey, int timeout)
+        private string GetToken(Users user, string secretKey, int timeout)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.Default.GetBytes(secretKey);
@@ -250,10 +250,11 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        private List<Claim> GetClaims(User user)
+        private List<Claim> GetClaims(Users user)
         {
             var claims = new List<Claim> {
-                            new Claim(ClaimTypes.Name, user.Username)
+                            new Claim(ClaimTypes.Name, user.Username),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                         };
             var permissions = this.permissionRepository.Read((p) => p.RoleId == user.RoleId).Select(p => p.ActionId).ToList();
             var customClaims = this.actionRepository.Read((a) => permissions.Contains(a.Id)).Select(p =>

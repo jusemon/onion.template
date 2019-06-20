@@ -13,9 +13,9 @@
     /// <summary>
     /// User Application class. 
     /// </summary>
-    /// <seealso cref="Company.Project.Application.Services.Generics.Base.BaseApplication{Company.Project.Domain.Entities.Security.User}" />
+    /// <seealso cref="Company.Project.Application.Services.Generics.Base.BaseApplication{Company.Project.Domain.Entities.Security.Users}" />
     /// <seealso cref="Company.Project.Application.Interfaces.Security.IUserApplication" />
-    public class UserApplication : BaseApplication<User>, IUserApplication
+    public class UserApplication : BaseApplication<Users>, IUserApplication
     {
         /// <summary>
         /// The base service
@@ -43,7 +43,7 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public Response<User> Login(User user)
+        public Response<Users> Login(Users user)
         {
             return this.Try(() =>
             {
@@ -80,7 +80,7 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public Response<User> CheckRecoveryToken(User user)
+        public Response<Users> CheckRecoveryToken(Users user)
         {
             return this.Try(() => this.baseService.CheckRecoveryToken(user));
         }
@@ -91,7 +91,7 @@
         /// <param name="user">The user.</param>
         /// <param name="uri">The URI.</param>
         /// <returns></returns>
-        public Response<User> UpdatePassword(User user, string uri)
+        public Response<Users> UpdatePassword(Users user, string uri)
         {
             return this.Try(() =>
             {

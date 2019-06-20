@@ -1,6 +1,8 @@
 ﻿namespace Company.Project.Domain.Entities.Generics.Base
 {
     using System;
+    using Company.Project.Domain.Entities.Security;
+    using Dapper.Contrib.Extensions;
 
     /// <summary>
     /// Base Entity class. 
@@ -29,7 +31,7 @@
         /// <value>
         /// The created by.
         /// </value>
-        public int CreatedBy { get; set; }
+        public long CreatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the last updated at.
@@ -45,6 +47,24 @@
         /// <value>
         /// The last updated by.
         /// </value>
-        public int? LastUpdatedBy { get; set; }
+        public long? LastUpdatedBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the created by user.
+        /// </summary>
+        /// <value>
+        /// The created by user.
+        /// </value>
+        [Computed]
+        public Users CreatedByUser { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last updated by user.
+        /// </summary>
+        /// <value>
+        /// The last updated by user.
+        /// </value>
+        [Computed]
+        public Users LastUpdatedByUser { get; set; }
     }
 }

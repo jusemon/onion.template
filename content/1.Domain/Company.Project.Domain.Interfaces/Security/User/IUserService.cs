@@ -6,27 +6,27 @@
     /// <summary>
     /// User Service interface. 
     /// </summary>
-    /// <seealso cref="Company.Project.Domain.Interfaces.Generics.Base.IBaseService{Company.Project.Domain.Entities.Security.User}" />
-    public interface IUserService : IBaseService<User>
+    /// <seealso cref="Company.Project.Domain.Interfaces.Generics.Base.IBaseService{Company.Project.Domain.Entities.Security.Users}" />
+    public interface IUserService : IBaseService<Users>
     {
         /// <summary>
         /// Logins the specified user.
         /// </summary>
         /// <param name="user">The user.</param>
-        void Login(User user);
+        void Login(Users user);
 
         /// <summary>
         /// Gets the user with recovery token.
         /// </summary>
         /// <param name="email">The email.</param>
         /// <returns></returns>
-        User GetUserWithRecoveryToken(string email);
+        Users GetUserWithRecoveryToken(string email);
 
         /// <summary>
         /// Checks the recovery token.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        User CheckRecoveryToken(User user);
+        Users CheckRecoveryToken(Users user);
     }
 }

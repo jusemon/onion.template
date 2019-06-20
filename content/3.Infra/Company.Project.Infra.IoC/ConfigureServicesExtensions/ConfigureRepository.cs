@@ -24,8 +24,8 @@
                 return configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
             }, new PerRequestLifeTime());
             services.Register<IDbFactory, SQLiteFactory>(new PerRequestLifeTime());
-            services.RegisterAssembly(
-                typeof(BaseRepository<>).Assembly, (a, b) => ConfigureServicesHelper.ShouldRegister(a, b, typeof(IBaseRepository<>)));
+            //services.Register(typeof(IBaseRepository<>), typeof(SQLiteBaseRepository<>));
+            services.Register(typeof(IBaseRepository<>), typeof(EFSQLiteBaseRepository<>));
         }
     }
 }

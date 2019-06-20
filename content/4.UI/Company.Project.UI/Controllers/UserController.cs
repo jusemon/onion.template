@@ -15,7 +15,7 @@
     /// <seealso cref="Generics.Base.BaseController{User}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : BaseController<User>
+    public class UserController : BaseController<Users>
     {
         /// <summary>
         /// The user application
@@ -38,7 +38,7 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("Login")]
-        public virtual ActionResult<Response<User>> Login([FromBody] User entity)
+        public virtual ActionResult<Response<Users>> Login([FromBody] Users entity)
         {
             return this.userApplication.Login(entity);
         }
@@ -65,7 +65,7 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("CheckRecoveryToken")]
-        public Response<User> CheckRecoveryToken([FromBody] User user)
+        public Response<Users> CheckRecoveryToken([FromBody] Users user)
         {
             return this.userApplication.CheckRecoveryToken(user);
         }
@@ -77,7 +77,7 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("UpdatePassword")]
-        public Response<User> UpdatePassword([FromBody] User user)
+        public Response<Users> UpdatePassword([FromBody] Users user)
         {
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
             return this.userApplication.UpdatePassword(user, uri);

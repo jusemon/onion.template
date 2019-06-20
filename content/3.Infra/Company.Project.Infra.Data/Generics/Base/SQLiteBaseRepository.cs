@@ -4,6 +4,7 @@
     using Dapper.Contrib.Extensions;
     using Domain.Entities.Generics;
     using Domain.Entities.Generics.Base;
+    using Domain.Entities.Security;
     using Domain.Interfaces.Data;
     using Domain.Interfaces.Generics.Base;
     using System;
@@ -16,23 +17,18 @@
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <seealso cref="Company.Project.Domain.Interfaces.Generics.Base.IBaseRepository{TEntity}" />
-    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
+    public class SQLiteBaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
     {
-        /// <summary>
-        /// The plural end in es
-        /// </summary>
-        private readonly IList<string> pluralEndInEs = new List<string> { "s", "sh", "ch", "x" };
-
         /// <summary>
         /// The database factory
         /// </summary>
         private readonly IDbFactory dbFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseRepository{TEntity}"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteBaseRepository{TEntity}"/> class.
         /// </summary>
         /// <param name="dbFactory">The database factory.</param>
-        public BaseRepository(IDbFactory dbFactory)
+        public SQLiteBaseRepository(IDbFactory dbFactory)
         {
             this.dbFactory = dbFactory;
         }
@@ -118,15 +114,13 @@
             {
                 using (var con = this.dbFactory.GetConnection())
                 {
-                    string tableName = this.GetTableName();
+                    var tableName = typeof(TEntity).Name;
                     var offset = pageSize * (pageIndex - 1);
                     var totalItems = con.Query<long>($"SELECT COUNT(*) FROM {tableName}").FirstOrDefault();
-                    var sortByQuery = string.Empty;
-                    if (sortBy != null)
-                    {
-                        sortByQuery = $"ORDER BY @sortBy {(!isAsc ? "DESC" : "")}";
-                    }
-                    var list = con.Query<TEntity>($"SELECT * FROM {tableName} {sortByQuery} LIMIT @pageSize OFFSET @offset", new { pageSize, offset, sortBy });
+                    var sortByQuery = GetSortBy(sortBy, isAsc);
+                    var list = con.Query($@"SELECT T.*, UC.Id, UC.Username, UU.Id, UU.Username FROM {tableName} T 
+                            LEFT JOIN Users UC ON T.CreatedBy = UC.Id LEFT JOIN Users UU ON T.LastUpdatedBy = UU.Id {sortByQuery} LIMIT @pageSize OFFSET @offset",
+                        AuditMapping(), new { pageSize, offset, sortBy });
                     return new Page<TEntity>
                     {
                         PageIndex = pageIndex,
@@ -183,7 +177,7 @@
             {
                 using (var con = this.dbFactory.GetConnection())
                 {
-                    var tableName = this.GetTableName();
+                    var tableName = typeof(TEntity).Name;
                     con.Query($"DELETE FROM {tableName} WHERE Id in @ids", new { ids });
                     return true;
                 }
@@ -191,14 +185,38 @@
         }
 
         /// <summary>
-        /// Gets the name of the table.
+        /// Audits the mapping.
         /// </summary>
         /// <returns></returns>
-        private string GetTableName()
+        private static Func<TEntity, Users, Users, TEntity> AuditMapping()
         {
-            var tableName = typeof(TEntity).Name;
-            tableName += this.pluralEndInEs.Any(p => tableName.EndsWith(p)) ? "es" : "s";
-            return tableName;
+            return (r, uc, uu) =>
+            {
+                r.CreatedByUser = uc;
+                r.LastUpdatedByUser = uu;
+                return r;
+            };
+        }
+
+        /// <summary>
+        /// Gets the sort by.
+        /// </summary>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
+        /// <returns></returns>
+        protected static string GetSortBy(string sortBy, bool isAsc)
+        {
+            var sortByQuery = string.Empty;
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                var atts = typeof(TEntity).GetProperties().FirstOrDefault(p => p.Name.Equals(sortBy, StringComparison.InvariantCultureIgnoreCase));
+                if (atts != null)
+                {
+                    sortByQuery = $"ORDER BY T.{atts.Name} {(!isAsc ? "DESC" : "")}";
+                }
+            }
+
+            return sortByQuery;
         }
 
         /// <summary>
@@ -208,7 +226,7 @@
         /// <param name="action">The action.</param>
         /// <returns></returns>
         /// <exception cref="AppException"></exception>
-        private TOut Try<TOut>(Func<TOut> action)
+        protected TOut Try<TOut>(Func<TOut> action)
         {
             try
             {

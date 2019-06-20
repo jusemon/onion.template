@@ -7,7 +7,7 @@
     /// User class.
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    public class User : BaseEntity
+    public class Users : BaseEntity
     {
         /// <summary>
         /// Gets or sets the username.
@@ -39,7 +39,7 @@
         /// <value>
         /// The role identifier.
         /// </value>
-        public int RoleId { get; set; }
+        public long RoleId { get; set; }
 
         /// <summary>
         /// Gets or sets the token.
@@ -49,5 +49,14 @@
         /// </value>
         [Computed]
         public string Token { get; set; }
+
+        /// <summary>
+        /// Gets or sets the roles.
+        /// </summary>
+        /// <value>
+        /// The roles.
+        /// </value>
+        [Computed]
+        public Roles Roles { get; set; }
     }
 }
