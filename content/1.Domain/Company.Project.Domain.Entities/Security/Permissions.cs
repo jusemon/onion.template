@@ -7,6 +7,7 @@
     /// Permission class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
+    [Table("Permissions")]
     public class Permissions : BaseEntity
     {
         /// <summary>
@@ -32,7 +33,7 @@
         /// The roles.
         /// </value>
         [Computed]
-        public Roles Roles { get; set; }
+        public virtual Roles Roles { get; set; }
 
         /// <summary>
         /// Gets or sets the actions.
@@ -41,6 +42,6 @@
         /// The actions.
         /// </value>
         [Computed]
-        public Actions Actions { get; set; }
+        public virtual Actions Actions { get; set; }
     }
 }

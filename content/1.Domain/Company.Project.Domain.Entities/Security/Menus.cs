@@ -2,14 +2,13 @@
 {
     using Dapper.Contrib.Extensions;
     using Generics.Base;
-    using System.Collections.Generic;
 
     /// <summary>
     /// Action class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    [Table("Actions")]
-    public class Actions : BaseEntity
+    [Table("Menus")]
+    public class Menus : BaseEntity
     {
         /// <summary>
         /// Gets or sets the name.
@@ -20,12 +19,28 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the description.
+        /// Gets or sets the icon.
         /// </summary>
         /// <value>
-        /// The description.
+        /// The icon.
         /// </value>
-        public string Description { get; set; }
+        public string Icon { get; set; }
+
+        /// <summary>
+        /// Gets or sets the position.
+        /// </summary>
+        /// <value>
+        /// The position.
+        /// </value>
+        public int Position { get; set; }
+
+        /// <summary>
+        /// Gets or sets the action identifier.
+        /// </summary>
+        /// <value>
+        /// The action identifier.
+        /// </value>
+        public long ActionId { get; set; }
 
         /// <summary>
         /// Gets or sets the permissions.
@@ -34,6 +49,6 @@
         /// The permissions.
         /// </value>
         [Computed]
-        public virtual ICollection<Permissions> Permissions { get; set; }
+        public virtual Actions Actions { get; set; }
     }
 }

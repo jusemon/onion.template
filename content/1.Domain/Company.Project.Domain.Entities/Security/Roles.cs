@@ -8,6 +8,7 @@
     /// Role class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
+    [Table("Roles")]
     public class Roles : BaseEntity
     {
         /// <summary>
@@ -33,9 +34,9 @@
         /// The permissions.
         /// </value>
         [Computed]
-        public ICollection<Permissions> Permissions { get; set; }
+        public virtual ICollection<Permissions> Permissions { get; set; }
 
         [Computed]
-        public ICollection<Users> Users { get; set; }
+        public virtual ICollection<Users> Users { get; set; }
     }
 }

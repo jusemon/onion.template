@@ -36,6 +36,14 @@
         public virtual DbSet<Actions> Actions { get; set; }
 
         /// <summary>
+        /// Gets or sets the menus.
+        /// </summary>
+        /// <value>
+        /// The menus.
+        /// </value>
+        public virtual DbSet<Menus> Menus { get; set; }
+
+        /// <summary>
         /// Gets or sets the permissions.
         /// </summary>
         /// <value>
@@ -95,6 +103,32 @@
                 entity.HasOne(e => e.CreatedByUser).WithMany().HasForeignKey(e => e.CreatedBy);
 
                 entity.HasOne(e => e.LastUpdatedByUser).WithMany().HasForeignKey(e => e.LastUpdatedBy);
+            });
+
+            modelBuilder.Entity<Menus>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedAt)
+                    .IsRequired()
+                    .HasColumnType("DATE");
+
+                entity.Property(e => e.Icon).HasColumnType("VARCHAR(50)");
+
+                entity.Property(e => e.LastUpdatedAt).HasColumnType("DATE");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnType("VARCHAR(20)");
+
+                entity.HasOne(d => d.Actions).WithMany().HasForeignKey(d => d.ActionId);
+
+                entity.HasOne(d => d.CreatedByUser).WithMany().HasForeignKey(d => d.CreatedBy);
+
+                entity.HasOne(d => d.LastUpdatedByUser).WithMany().HasForeignKey(d => d.LastUpdatedBy);
             });
 
             modelBuilder.Entity<Permissions>(entity =>

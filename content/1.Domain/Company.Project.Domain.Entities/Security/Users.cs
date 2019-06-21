@@ -7,6 +7,7 @@
     /// User class.
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
+    [Table("Users")]
     public class Users : BaseEntity
     {
         /// <summary>
@@ -57,6 +58,6 @@
         /// The roles.
         /// </value>
         [Computed]
-        public Roles Roles { get; set; }
+        public virtual Roles Roles { get; set; }
     }
 }
