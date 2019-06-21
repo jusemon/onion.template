@@ -58,6 +58,6 @@
         /// The roles.
         /// </value>
         [Computed]
-        public virtual Roles Roles { get; set; }
+        public virtual Roles Role { get; set; }
     }
 }

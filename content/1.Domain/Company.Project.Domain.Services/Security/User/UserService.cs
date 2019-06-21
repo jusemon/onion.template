@@ -175,27 +175,26 @@
         /// <summary>
         /// Checks the recovery token.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="id">The identifier.</param>
+        /// <param name="token">The token.</param>
         /// <returns></returns>
-        /// <exception cref="AppException">
-        /// Enlace de recuperación inválido.
+        /// <exception cref="AppException">Enlace de recuperación inválido.
         /// or
-        /// El enlace de recuperación ha expirado.
-        /// </exception>
-        public Users CheckRecoveryToken(Users user)
+        /// El enlace de recuperación ha expirado.</exception>
+        public Users CheckRecoveryToken(long id, string token)
         {
             try
             {
-                var currentUser = this.baseRepository.Read(user.Id);
+                var currentUser = this.baseRepository.Read(id);
                 var key = Encoding.UTF8.GetBytes(currentUser.Password);
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var principal = tokenHandler.ValidateToken(user.Token, new TokenValidationParameters
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false
-                }, out SecurityToken token);
+                }, out SecurityToken securityToken);
                 var claim = principal.Claims.First(c => c.Type == ClaimTypes.Name);
                 if (claim.Value != currentUser.Username)
                 {

@@ -124,7 +124,7 @@
                     .IsRequired()
                     .HasColumnType("VARCHAR(20)");
 
-                entity.HasOne(d => d.Actions).WithMany().HasForeignKey(d => d.ActionId);
+                entity.HasOne(d => d.Action).WithMany().HasForeignKey(d => d.ActionId);
 
                 entity.HasOne(d => d.CreatedByUser).WithMany().HasForeignKey(d => d.CreatedBy);
 
@@ -141,9 +141,9 @@
 
                 entity.Property(e => e.LastUpdatedAt).HasColumnType("DATE");
 
-                entity.HasOne(e => e.Roles).WithMany(e => e.Permissions).HasForeignKey(e => e.RoleId);
+                entity.HasOne(e => e.Role).WithMany(e => e.Permissions).HasForeignKey(e => e.RoleId);
 
-                entity.HasOne(e => e.Actions).WithMany(e => e.Permissions).HasForeignKey(e => e.ActionId);
+                entity.HasOne(e => e.Action).WithMany(e => e.Permissions).HasForeignKey(e => e.ActionId);
 
                 entity.HasOne(e => e.CreatedByUser).WithMany().HasForeignKey(e => e.CreatedBy);
 
@@ -204,7 +204,7 @@
                     .IsRequired()
                     .HasColumnType("VARCHAR(20)");
 
-                entity.HasOne(e => e.Roles).WithMany(e => e.Users).HasForeignKey(e => e.RoleId);
+                entity.HasOne(e => e.Role).WithMany(e => e.Users).HasForeignKey(e => e.RoleId);
 
                 entity.HasOne(e => e.CreatedByUser).WithMany().HasForeignKey(e => e.CreatedBy);
 

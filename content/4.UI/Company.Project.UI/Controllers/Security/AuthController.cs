@@ -65,7 +65,7 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("CheckRecoveryToken")]
-        public Response<Users> CheckRecoveryToken([FromBody] Users user)
+        public Response<Users> CheckRecoveryToken([FromBody] UserLoginToken user)
         {
             return this.authApplication.CheckRecoveryToken(user);
         }

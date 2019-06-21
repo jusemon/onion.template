@@ -49,6 +49,6 @@
         /// The permissions.
         /// </value>
         [Computed]
-        public virtual Actions Actions { get; set; }
+        public virtual Actions Action { get; set; }
     }
 }

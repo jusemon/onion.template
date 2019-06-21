@@ -27,6 +27,6 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Users CheckRecoveryToken(Users user);
+        Users CheckRecoveryToken(long id, string token);
     }
 }

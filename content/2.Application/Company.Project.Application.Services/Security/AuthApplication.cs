@@ -86,9 +86,11 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public Response<Users> CheckRecoveryToken(Users user)
+        public Response<Users> CheckRecoveryToken(UserLoginToken user)
         {
-            return ApplicationExtensions.Try(() => this.userService.CheckRecoveryToken(user));
+            return ApplicationExtensions.Try(() => 
+                this.userService.CheckRecoveryToken(user.Id, user.Token)
+            );
         }
 
         /// <summary>
@@ -101,7 +103,7 @@
         {
             return ApplicationExtensions.Try(() =>
             {
-                var currentUser = this.userService.CheckRecoveryToken(user);
+                var currentUser = this.userService.CheckRecoveryToken(user.Id, user.Token);
                 currentUser.Password = user.Password;
                 this.userService.Update(currentUser);
                 if (currentUser != null)

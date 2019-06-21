@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Response<Users> CheckRecoveryToken(Users user);
+        Response<Users> CheckRecoveryToken(UserLoginToken user);
 
         /// <summary>
         /// Updates the password.
