@@ -24,6 +24,13 @@
         IEnumerable<TEntity> Read();
 
         /// <summary>
+        /// Reads the specified filter.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        IEnumerable<TEntity> Read(System.Func<TEntity, bool> filter);
+
+        /// <summary>
         /// Reads by the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>

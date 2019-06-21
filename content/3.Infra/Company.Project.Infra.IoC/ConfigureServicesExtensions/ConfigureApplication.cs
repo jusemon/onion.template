@@ -18,7 +18,7 @@
         public static void ConfigureApplication(this IServiceCollection services)
         {
             services.AddTransient(typeof(IBaseApplication<>), typeof(BaseApplication<>));
-            services.AddTransient<IUserApplication, UserApplication>();
+            services.AddTransient<IAuthApplication, AuthApplication>();
         }
     }
 }

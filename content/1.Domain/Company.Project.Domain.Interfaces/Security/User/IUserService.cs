@@ -13,7 +13,7 @@
         /// Logins the specified user.
         /// </summary>
         /// <param name="user">The user.</param>
-        void Login(Users user);
+        Users Login(string user, string password);
 
         /// <summary>
         /// Gets the user with recovery token.

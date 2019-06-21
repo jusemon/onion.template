@@ -1,4 +1,4 @@
-﻿namespace Company.Project.UI.Controllers
+﻿namespace Company.Project.UI.Controllers.Security
 {
     using Application.Interfaces.Generics.Base;
     using Domain.Entities.Security;

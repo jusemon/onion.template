@@ -1,21 +1,21 @@
 ﻿namespace Company.Project.Application.Interfaces.Security
 {
+    using Interfaces.Security.DTOs;
     using Domain.Entities.Security;
     using Generics;
-    using Generics.Base;
 
     /// <summary>
     /// User Application interface. 
     /// </summary>
     /// <seealso cref="Company.Project.Application.Interfaces.Generics.Base.IBaseApplication{Company.Project.Domain.Entities.Security.Users}" />
-    public interface IUserApplication : IBaseApplication<Users>
+    public interface IAuthApplication
     {
         /// <summary>
         /// Logins the specified user.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Response<Users> Login(Users user);
+        Response<UserLoginToken> Login(UserLogin user);
 
         /// <summary>
         /// Sends the recovery email.

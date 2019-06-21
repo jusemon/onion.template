@@ -68,6 +68,16 @@
         }
 
         /// <summary>
+        /// Reads the specified filter.
+        /// </summary>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<TEntity> Read(System.Func<TEntity, bool> filter)
+        {
+            return this.baseRepository.Read(filter);
+        }
+
+        /// <summary>
         /// Reads by the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>

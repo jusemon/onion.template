@@ -18,9 +18,8 @@
         /// <param name="baseApplication">The base application.</param>
         /// <param name="action">The action.</param>
         /// <returns></returns>
-        public static Response<TResult> Try<TEntity, TResult>(
-            this IBaseApplication<TEntity> baseApplication,
-            Func<TResult> action) where TEntity : BaseEntity, new()
+        public static Response<TResult> Try<TResult>(
+            Func<TResult> action)
         {
             var response = new Response<TResult>();
             try

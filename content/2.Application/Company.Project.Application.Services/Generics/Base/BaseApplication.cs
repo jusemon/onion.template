@@ -35,7 +35,7 @@
         /// <returns></returns>
         public virtual Response<bool> Create(TEntity entity)
         {
-            return this.Try(() => this.baseService.Create(entity));
+            return ApplicationExtensions.Try(() => this.baseService.Create(entity));
         }
 
         /// <summary>
@@ -45,7 +45,7 @@
         /// <returns></returns>
         public virtual Response<bool> Delete(int id)
         {
-            return this.Try(() => this.baseService.Delete(id));
+            return ApplicationExtensions.Try(() => this.baseService.Delete(id));
         }
 
         /// <summary>
@@ -54,7 +54,7 @@
         /// <returns></returns>
         public virtual Response<IEnumerable<TEntity>> Read()
         {
-            return this.Try(() => this.baseService.Read());
+            return ApplicationExtensions.Try(() => this.baseService.Read());
         }
 
         /// <summary>
@@ -64,7 +64,7 @@
         /// <returns></returns>
         public virtual Response<TEntity> Read(int id)
         {
-            return this.Try(() => this.baseService.Read(id));
+            return ApplicationExtensions.Try(() => this.baseService.Read(id));
         }
 
         /// <summary>
@@ -77,7 +77,7 @@
         /// <returns></returns>
         public virtual Response<Page<TEntity>> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
         {
-            return this.Try(() => this.baseService.Read(pageIndex, pageSize, sortBy, isAsc));
+            return ApplicationExtensions.Try(() => this.baseService.Read(pageIndex, pageSize, sortBy, isAsc));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@
         /// <returns></returns>
         public virtual Response<bool> Update(TEntity entity)
         {
-            return this.Try(() => this.baseService.Update(entity));
+            return ApplicationExtensions.Try(() => this.baseService.Update(entity));
         }
     }
 }

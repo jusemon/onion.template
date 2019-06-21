@@ -111,7 +111,7 @@
         /// <returns></returns>
         public override bool Create(Users entity)
         {
-            entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)), this.authConfig.Key);
+            entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)));
             var res = base.Create(entity);
             entity.Password = string.Empty;
             return res;
@@ -126,7 +126,7 @@
         {
             if (!string.IsNullOrWhiteSpace(entity.Password))
             {
-                entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)), this.authConfig.Key);
+                entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)));
             }
             else
             {
@@ -143,18 +143,14 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <exception cref="AppException">Usuario o contraseña incorrectos.</exception>
-        public void Login(Users user)
+        public Users Login(string username, string password)
         {
-            var result = this.baseRepository.Read((u) => u.Username.ToUpperInvariant() == user.Username.ToUpperInvariant()).FirstOrDefault();
-            var pass = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(user.Password)), this.authConfig.Key);
-            if (result != null && Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(user.Password)), this.authConfig.Key))
+            var result = this.baseRepository.Read((u) => u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var hash = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(password)));
+            if (result != null && Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(password))))
             {
-                user.Token = this.GetToken(result, this.authConfig.Key, authConfig.SessionTimeout);
-                user.Password = string.Empty;
-                user.RoleId = result.RoleId;
-                user.Email = result.Email;
-                user.Id = result.Id;
-                return;
+                result.Token = this.GetToken(result, this.authConfig.Key, authConfig.SessionTimeout);
+                return result;
             }
             throw new AppException(AppExceptionTypes.Validation, "Usuario o contraseña incorrectos.");
         }

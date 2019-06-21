@@ -1,4 +1,4 @@
-﻿namespace Company.Project.UI.Controllers
+﻿namespace Company.Project.UI.Controllers.Security
 {
     using Application.Interfaces.Generics.Base;
     using Domain.Entities.Security;
@@ -6,19 +6,19 @@
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
-    /// Role Controller class. 
+    /// User Controller class. 
     /// </summary>
-    /// <seealso cref="Generics.Base.BaseController{Role}" />
+    /// <seealso cref="Generics.Base.BaseController{User}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : BaseController<Roles>
+    public class UserController : BaseController<Users>
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RoleController"/> class.
+        /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
         /// <param name="baseApplication">The base application.</param>
-        public RoleController(IBaseApplication<Roles> baseApplication) : base(baseApplication)
+        public UserController(IBaseApplication<Users> baseApplication) : base(baseApplication)
         {
 
         }

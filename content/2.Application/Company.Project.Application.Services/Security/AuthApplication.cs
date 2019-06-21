@@ -3,24 +3,25 @@
     using Domain.Entities.Security;
     using Domain.Interfaces.Email;
     using Domain.Interfaces.Security.User;
-    using Generics.Base;
     using Infra.Utils.Objects;
     using Interfaces.Generics;
     using Interfaces.Security;
+    using Interfaces.Security.DTOs;
     using Microsoft.AspNetCore.WebUtilities;
+    using System;
     using System.IO;
+    using System.Linq;
 
     /// <summary>
-    /// User Application class. 
+    /// User Application class.
     /// </summary>
-    /// <seealso cref="Company.Project.Application.Services.Generics.Base.BaseApplication{Company.Project.Domain.Entities.Security.Users}" />
-    /// <seealso cref="Company.Project.Application.Interfaces.Security.IUserApplication" />
-    public class UserApplication : BaseApplication<Users>, IUserApplication
+    /// <seealso cref="Company.Project.Application.Interfaces.Security.IAuthApplication" />
+    public class AuthApplication : IAuthApplication
     {
         /// <summary>
         /// The base service
         /// </summary>
-        private readonly IUserService baseService;
+        private readonly IUserService userService;
 
         /// <summary>
         /// The email service
@@ -28,13 +29,13 @@
         private readonly IEmailService emailService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserApplication"/> class.
+        /// Initializes a new instance of the <see cref="AuthApplication" /> class.
         /// </summary>
-        /// <param name="baseService">The base service.</param>
+        /// <param name="userService">The base service.</param>
         /// <param name="emailService">The email service.</param>
-        public UserApplication(IUserService baseService, IEmailService emailService) : base(baseService)
+        public AuthApplication(IUserService userService, IEmailService emailService)
         {
-            this.baseService = baseService;
+            this.userService = userService;
             this.emailService = emailService;
         }
 
@@ -43,12 +44,17 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public Response<Users> Login(Users user)
+        public Response<UserLoginToken> Login(UserLogin user)
         {
-            return this.Try(() =>
+            return ApplicationExtensions.Try(() =>
             {
-                this.baseService.Login(user);
-                return user;
+                var result = this.userService.Login(user.Username, user.Password);
+                return new UserLoginToken {
+                    Id = result.Id,
+                    Username = result.Username,
+                    Email = result.Email,
+                    Token = result.Token
+                };
             });
         }
 
@@ -60,9 +66,9 @@
         /// <returns></returns>
         public Response<bool> SendRecovery(string email, string uri)
         {
-            return this.Try(() =>
+            return ApplicationExtensions.Try(() =>
             {
-                var user = this.baseService.GetUserWithRecoveryToken(email);
+                var user = this.userService.GetUserWithRecoveryToken(email);
                 if (user == null)
                 {
                     return false;
@@ -82,7 +88,7 @@
         /// <returns></returns>
         public Response<Users> CheckRecoveryToken(Users user)
         {
-            return this.Try(() => this.baseService.CheckRecoveryToken(user));
+            return ApplicationExtensions.Try(() => this.userService.CheckRecoveryToken(user));
         }
 
         /// <summary>
@@ -93,11 +99,11 @@
         /// <returns></returns>
         public Response<Users> UpdatePassword(Users user, string uri)
         {
-            return this.Try(() =>
+            return ApplicationExtensions.Try(() =>
             {
-                var currentUser = this.baseService.CheckRecoveryToken(user);
+                var currentUser = this.userService.CheckRecoveryToken(user);
                 currentUser.Password = user.Password;
-                this.baseService.Update(currentUser);
+                this.userService.Update(currentUser);
                 if (currentUser != null)
                 {
                     var template = File.ReadAllText("Templates/PasswordChanged.cshtml");

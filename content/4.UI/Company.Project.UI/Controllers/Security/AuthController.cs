@@ -1,9 +1,9 @@
-﻿namespace Company.Project.UI.Controllers
+﻿namespace Company.Project.UI.Controllers.Security
 {
     using Application.Interfaces.Generics;
     using Application.Interfaces.Security;
+    using Company.Project.Application.Interfaces.Security.DTOs;
     using Domain.Entities.Security;
-    using Generics.Base;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
@@ -15,20 +15,20 @@
     /// <seealso cref="Generics.Base.BaseController{User}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : BaseController<Users>
+    public class AuthController : ControllerBase
     {
         /// <summary>
         /// The user application
         /// </summary>
-        private readonly IUserApplication userApplication;
+        private readonly IAuthApplication authApplication;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
-        /// <param name="userApplication">The user application.</param>
-        public UserController(IUserApplication userApplication) : base(userApplication)
+        /// <param name="authApplication">The user application.</param>
+        public AuthController(IAuthApplication authApplication)
         {
-            this.userApplication = userApplication;
+            this.authApplication = authApplication;
         }
 
         /// <summary>
@@ -38,9 +38,9 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("Login")]
-        public virtual ActionResult<Response<Users>> Login([FromBody] Users entity)
+        public virtual ActionResult<Response<UserLoginToken>> Login([FromBody] UserLogin entity)
         {
-            return this.userApplication.Login(entity);
+            return this.authApplication.Login(entity);
         }
 
 
@@ -55,7 +55,7 @@
         {
 
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            return this.userApplication.SendRecovery(email, uri);
+            return this.authApplication.SendRecovery(email, uri);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@
         [HttpPost("CheckRecoveryToken")]
         public Response<Users> CheckRecoveryToken([FromBody] Users user)
         {
-            return this.userApplication.CheckRecoveryToken(user);
+            return this.authApplication.CheckRecoveryToken(user);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@
         public Response<Users> UpdatePassword([FromBody] Users user)
         {
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            return this.userApplication.UpdatePassword(user, uri);
+            return this.authApplication.UpdatePassword(user, uri);
         }
     }
 }
