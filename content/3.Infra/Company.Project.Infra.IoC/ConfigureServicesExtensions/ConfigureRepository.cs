@@ -4,28 +4,29 @@
     using Domain.Entities.Config;
     using Domain.Interfaces.Data;
     using Domain.Interfaces.Generics.Base;
-    using LightInject;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Configure Services Extensions class. 
     /// </summary>
     public static partial class ConfigureServicesExtensions
     {
+
         /// <summary>
         /// Configures the repository.
         /// </summary>
         /// <param name="services">The services.</param>
-        public static void ConfigureRepository(this IServiceContainer services)
+        public static void ConfigureRepository(this IServiceCollection services)
         {
-            services.Register((provider) =>
+            services.AddSingleton((provider) =>
             {
-                var configuration = provider.GetInstance<IConfiguration>();
+                var configuration = provider.GetService<IConfiguration>();
                 return configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
-            }, new PerRequestLifeTime());
-            services.Register<IDbFactory, SQLiteFactory>(new PerRequestLifeTime());
-            //services.Register(typeof(IBaseRepository<>), typeof(SQLiteBaseRepository<>));
-            services.Register(typeof(IBaseRepository<>), typeof(EFSQLiteBaseRepository<>));
+            });
+            services.AddSingleton<IDbFactory, SQLiteFactory>();
+            services.AddTransient(typeof(IBaseRepository<>), typeof(SQLiteBaseRepository<>)); // typeof(EFSQLiteBaseRepository<>);
         }
+
     }
 }

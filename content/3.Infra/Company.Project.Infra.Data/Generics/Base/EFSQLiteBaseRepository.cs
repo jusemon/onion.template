@@ -108,13 +108,20 @@
                 var con = this.securityContext;
                 var totalItems = con.Set<TEntity>().AsNoTracking().LongCount();
                 var offset = pageSize * (pageIndex - 1);
-                var query = con.Set<TEntity>().AsNoTracking().SortBy(sortBy, isAsc).Skip(offset).Take(pageSize);
+                var query = con.Set<TEntity>().SortBy(sortBy, isAsc).Skip(offset).Take(pageSize)
+                    .Include(e => e.CreatedByUser)
+                    .Include(e => e.LastUpdatedByUser);
                 return new Page<TEntity>
                 {
                     PageIndex = pageIndex,
                     PageSize = pageSize,
                     TotalItems = totalItems,
-                    Items = query.ToList()
+                    Items = query.AsNoTracking().ToList().Select(s =>
+                    {
+                        if (s.CreatedByUser != null) s.CreatedByUser.Password = null;
+                        if (s.LastUpdatedByUser != null) s.LastUpdatedByUser.Password = null;
+                        return s;
+                    })
                 };
             });
         }

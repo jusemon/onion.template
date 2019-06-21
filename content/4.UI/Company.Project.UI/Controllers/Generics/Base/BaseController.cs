@@ -40,7 +40,7 @@
         [ValidateClaim("[controller].create")]
         public virtual ActionResult<Response<bool>> Create([FromBody] TEntity entity)
         {
-            entity.CreatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier));
+            entity.CreatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             return this.baseApplication.Create(entity);
         }
 

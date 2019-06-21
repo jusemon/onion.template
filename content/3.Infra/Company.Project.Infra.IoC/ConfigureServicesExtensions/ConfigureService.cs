@@ -3,10 +3,12 @@
     using Domain.Entities.Config;
     using Domain.Interfaces.Email;
     using Domain.Interfaces.Generics.Base;
+    using Domain.Interfaces.Security.User;
     using Domain.Services.Email;
     using Domain.Services.Generics.Base;
-    using LightInject;
+    using Domain.Services.Security.User;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Configure Services Extensions class. 
@@ -18,21 +20,21 @@
         /// Configures the service.
         /// </summary>
         /// <param name="services">The services.</param>
-        public static void ConfigureService(this IServiceContainer services)
+        public static void ConfigureService(this IServiceCollection services)
         {
-            services.Register((provider) =>
+            services.AddSingleton((provider) =>
             {
-                var configuration = provider.GetInstance<IConfiguration>();
+                var configuration = provider.GetService<IConfiguration>();
                 return configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
-            }, new PerRequestLifeTime());
-            services.Register((provider) =>
+            });
+            services.AddSingleton((provider) =>
             {
-                var configuration = provider.GetInstance<IConfiguration>();
+                var configuration = provider.GetService<IConfiguration>();
                 return configuration.GetSection(nameof(EmailConfig)).Get<EmailConfig>();
-            }, new PerRequestLifeTime());
-            services.RegisterAssembly(
-                typeof(BaseService<>).Assembly, (a, b) => ConfigureServicesHelper.ShouldRegister(a, b, typeof(IBaseService<>)));
-            services.Register<IEmailService, EmailService>(new PerRequestLifeTime());
+            });
+            services.AddTransient(typeof(IBaseService<>), typeof(BaseService<>));
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IEmailService, EmailService>();
         }
     }
 }

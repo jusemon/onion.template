@@ -56,7 +56,7 @@
         /// The created by user.
         /// </value>
         [Computed]
-        public Users CreatedByUser { get; set; }
+        public virtual Users CreatedByUser { get; set; }
 
         /// <summary>
         /// Gets or sets the last updated by user.
@@ -65,6 +65,6 @@
         /// The last updated by user.
         /// </value>
         [Computed]
-        public Users LastUpdatedByUser { get; set; }
+        public virtual Users LastUpdatedByUser { get; set; }
     }
 }

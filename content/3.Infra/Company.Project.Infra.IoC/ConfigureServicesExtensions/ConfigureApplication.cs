@@ -1,8 +1,10 @@
 ﻿namespace Company.Project.Infra.IoC.ConfigureServicesExtensions
 {
     using Application.Interfaces.Generics.Base;
+    using Application.Interfaces.Security;
     using Application.Services.Generics.Base;
-    using LightInject;
+    using Application.Services.Security;
+    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Configure Services Extensions class. 
@@ -13,10 +15,10 @@
         /// Configures the application.
         /// </summary>
         /// <param name="services">The services.</param>
-        public static void ConfigureApplication(this IServiceContainer services)
+        public static void ConfigureApplication(this IServiceCollection services)
         {
-            services.RegisterAssembly(
-                typeof(BaseApplication<>).Assembly, (a, b) => ConfigureServicesHelper.ShouldRegister(a, b, typeof(IBaseApplication<>)));
+            services.AddTransient(typeof(IBaseApplication<>), typeof(BaseApplication<>));
+            services.AddTransient<IUserApplication, UserApplication>();
         }
     }
 }

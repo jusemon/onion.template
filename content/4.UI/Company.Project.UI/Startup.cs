@@ -1,9 +1,8 @@
 ﻿namespace Company.Project.UI
 {
-    using Company.Project.Infra.Data.Contexts;
     using Domain.Entities.Config;
+    using Infra.Data.Contexts;
     using Infra.IoC.ConfigureServicesExtensions;
-    using LightInject;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -52,7 +51,14 @@
             var dbConfig = Configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<SecurityContext>(options=>options.UseSqlite(dbConfig.ConnectionString));
+            services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString));
+            services.ConfigureRepository();
+            services.ConfigureService();
+            services.ConfigureApplication();
+            services.Configure<MvcJsonOptions>(x =>
+            {
+                x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,17 +93,6 @@
                     { authConfig.Type, new string [0] }
                 });
             });
-        }
-
-        /// <summary>
-        /// Configures the container.
-        /// </summary>
-        /// <param name="container">The container.</param>
-        public void ConfigureContainer(IServiceContainer container)
-        {
-            container.ConfigureRepository();
-            container.ConfigureService();
-            container.ConfigureApplication();
         }
 
         /// <summary>
