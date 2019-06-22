@@ -1,0 +1,28 @@
+$primary: map-get($app-theme, primary);
+.form-container-center {
+  height: 100vh;
+  display: inline-block;
+  background-color: mat-color($primary);
+  width: 100%;
+  .mat-card {
+    width: 300px;
+    height: 300px;
+    margin: calc(50vh - 166px) calc(50% - 166px);
+    .mat-card-header * {
+      width: calc(100% - 8px);
+      text-align: center;
+      .mat-card-title {
+        color: mat-color($primary);
+      }
+    }
+    .mat-card-content {
+      height: 160px;
+      .mat-form-field {
+        width: 100%;
+      }
+    }
+    .mat-card-actions {
+      text-align: center;
+    }
+  }
+}

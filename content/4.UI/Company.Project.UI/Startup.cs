@@ -7,6 +7,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SpaServices.AngularCli;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -51,6 +52,7 @@
             var dbConfig = Configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSpaStaticFiles(c => c.RootPath = "ClientApp/dist/ClientApp");
             services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString));
             services.ConfigureRepository();
             services.ConfigureService();
@@ -111,15 +113,25 @@
             {
                 app.UseHsts();
             }
-            app.UseAuthentication();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseAuthentication();
+            app.UseMvc();
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppTitle V1");
             });
-            app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseSpa(spa => {
+                spa.Options.SourcePath = "ClientApp";
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
+            });
         }
     }
 }

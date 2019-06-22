@@ -1,0 +1,21 @@
+<form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+  <div mat-dialog-content>
+    <p>{{data.content}}</p>
+    <div *ngFor="let control of data.fields" class="row">
+      <div class="col">
+        <mat-form-field appearance="outline">
+          <mat-label>{{control.label}}</mat-label>
+          <input [formControlName]="control.name" matInput>
+          <mat-icon matSuffix *ngIf="control.icon" color="primary">{{control.icon}}</mat-icon>
+          <mat-error *ngFor="let error of form.controls[control.name]?.errors | keyvalue">
+            <span [innerHTML]="control.validators[error.key].message"></span>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button color="accent" cdkFocusInitial>Ok</button>
+  </div>
+</form>

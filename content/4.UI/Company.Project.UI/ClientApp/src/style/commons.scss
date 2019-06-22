@@ -1,0 +1,33 @@
+.container {
+  padding: 0.5rem;
+}
+
+.background-container {
+  background-image: url('~/assets/background.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: bottom;
+}
+
+.filter {
+  width: 100%;
+  > .pull-right {
+    text-align: right
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.full-width-table {
+  width: 100%;
+  #{"th"}.mat-column-actions {
+    width: 125px;
+  }
+}

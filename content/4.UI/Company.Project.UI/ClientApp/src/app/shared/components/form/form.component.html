@@ -1,0 +1,29 @@
+<form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title [innerHtml]="title"></mat-card-title>
+      <mat-card-subtitle *ngIf="subtitle" [innerHtml]="subtitle"></mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngFor="let control of config.fields" class="row">
+        <div class="col">
+          <mat-form-field appearance="outline">
+            <mat-label>{{control.label}}</mat-label>
+            <input [formControlName]="control.name" [type]="control.type || 'text'" [autocomplete]="control.name" matInput>
+            <mat-icon matSuffix *ngIf="control.icon" color="primary">{{control.icon}}</mat-icon>
+            <mat-error *ngFor="let error of form.controls[control.name]?.errors | keyvalue">
+              <span [innerHTML]="control.validators[error.key].message"></span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <mat-error *ngFor="let error of form?.errors | keyvalue">
+        <span [innerHTML]="config.validators[error.key].message"></span>
+      </mat-error>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button type="button" (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" cdkFocusInitial>Ok</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
