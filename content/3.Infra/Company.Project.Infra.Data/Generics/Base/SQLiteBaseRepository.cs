@@ -9,6 +9,7 @@
     using Domain.Interfaces.Generics.Base;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using Utils.Exceptions;
 
@@ -25,12 +26,18 @@
         private readonly IDbFactory dbFactory;
 
         /// <summary>
+        /// The props
+        /// </summary>
+        private readonly PropertyDescriptorCollection props;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteBaseRepository{TEntity}"/> class.
         /// </summary>
         /// <param name="dbFactory">The database factory.</param>
         public SQLiteBaseRepository(IDbFactory dbFactory)
         {
             this.dbFactory = dbFactory;
+            this.props = TypeDescriptor.GetProperties(typeof(TEntity));
         }
 
         /// <summary>
@@ -204,15 +211,15 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        protected static string GetSortBy(string sortBy, bool isAsc)
+        protected string GetSortBy(string sortBy, bool isAsc)
         {
             var sortByQuery = string.Empty;
             if (!string.IsNullOrEmpty(sortBy))
             {
-                var atts = typeof(TEntity).GetProperties().FirstOrDefault(p => p.Name.Equals(sortBy, StringComparison.InvariantCultureIgnoreCase));
-                if (atts != null)
+                var prop = this.props.Find(sortBy, true);
+                if (prop != null)
                 {
-                    sortByQuery = $"ORDER BY T.{atts.Name} {(!isAsc ? "DESC" : "")}";
+                    sortByQuery = $"ORDER BY T.{prop.Name} {(!isAsc ? "DESC" : "")}";
                 }
             }
 

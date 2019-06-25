@@ -1,9 +1,13 @@
 .container {
+  padding: 1rem;
+}
+
+.mini-container {
   padding: 0.5rem;
 }
 
 .background-container {
-  background-image: url('~/assets/background.png');
+  background-image: url("~/assets/background.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position-y: bottom;
@@ -12,7 +16,7 @@
 .filter {
   width: 100%;
   > .pull-right {
-    text-align: right
+    text-align: right;
   }
 }
 
@@ -30,4 +34,16 @@
   #{"th"}.mat-column-actions {
     width: 125px;
   }
+}
+
+table.fixed {
+  table-layout: fixed;
+  width: 100%;
+  td {
+    width: 25%;
+  }
+}
+
+.bold {
+  font-weight: bold;
 }

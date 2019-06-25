@@ -12,6 +12,10 @@ import {
   MatInputModule,
   MatProgressSpinnerModule,
   MatDialogModule,
+  MatProgressBarModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule,
 } from '@angular/material';
 import { LayoutModule } from '@angular/cdk/layout';
 import { LoadingComponent } from './services/loading/loading.component';
@@ -50,6 +54,10 @@ import { FormComponent } from './components/form/form.component';
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
     FormComponent
   ],
   entryComponents: [ConfirmComponent, InputDialogComponent]

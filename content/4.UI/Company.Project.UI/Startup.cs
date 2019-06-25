@@ -53,7 +53,7 @@
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSpaStaticFiles(c => c.RootPath = "ClientApp/dist/ClientApp");
-            services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString));
+            services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString), ServiceLifetime.Singleton);
             services.ConfigureRepository();
             services.ConfigureService();
             services.ConfigureApplication();

@@ -7,6 +7,7 @@
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using Utils.Exceptions;
 
@@ -23,12 +24,18 @@
         private readonly SecurityContext securityContext;
 
         /// <summary>
+        /// The props
+        /// </summary>
+        private readonly PropertyDescriptorCollection props;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteBaseRepository{TEntity}"/> class.
         /// </summary>
         /// <param name="dbFactory">The database factory.</param>
         public EFSQLiteBaseRepository(SecurityContext securityContext)
         {
             this.securityContext = securityContext;
+            this.props = TypeDescriptor.GetProperties(typeof(TEntity));
         }
 
         /// <summary>
@@ -108,7 +115,7 @@
                 var con = this.securityContext;
                 var totalItems = con.Set<TEntity>().AsNoTracking().LongCount();
                 var offset = pageSize * (pageIndex - 1);
-                var query = con.Set<TEntity>().SortBy(sortBy, isAsc).Skip(offset).Take(pageSize)
+                var query = con.Set<TEntity>().SortBy(this.props, sortBy, isAsc).Skip(offset).Take(pageSize)
                     .Include(e => e.CreatedByUser)
                     .Include(e => e.LastUpdatedByUser);
                 return new Page<TEntity>
@@ -198,16 +205,28 @@
         }
     }
 
+    /// <summary>
+    /// Extensions class. 
+    /// </summary>
     public static class Extensions
     {
-        public static IOrderedQueryable<TEntity> SortBy<TEntity>(this IQueryable<TEntity> q, string sortBy, bool isAsc) where TEntity : BaseEntity
+        /// <summary>
+        /// Sorts the by.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="q">The q.</param>
+        /// <param name="props">The props.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
+        /// <returns></returns>
+        public static IOrderedQueryable<TEntity> SortBy<TEntity>(this IQueryable<TEntity> q, PropertyDescriptorCollection props, string sortBy, bool isAsc) where TEntity : BaseEntity
         {
             if (!string.IsNullOrEmpty(sortBy))
             {
-                var atts = typeof(TEntity).GetProperties().FirstOrDefault(p => p.Name.Equals(sortBy, StringComparison.InvariantCultureIgnoreCase));
-                if (atts != null)
+                var prop = props.Find(sortBy, true);
+                if (prop != null)
                 {
-                    return isAsc ? q.OrderBy(e => atts.GetValue(e)) : q.OrderByDescending(e => atts.GetValue(e));
+                    return isAsc ? q.OrderBy(e => prop.GetValue(e)) : q.OrderByDescending(e => prop.GetValue(e));
                 }
             }
             return q.OrderBy(e => e.Id);

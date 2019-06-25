@@ -5,9 +5,9 @@ import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserLoginToken, UserLogin } from './login/login.models';
 import { Users } from '../security/users/users.models';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Response } from '../shared/generics/models';
-import { catchApiError } from '../shared/utils/rx-pipes';
+import { handleResponse } from '../shared/utils/rx-pipes';
 
 @Injectable({
   providedIn: 'root'
@@ -63,8 +63,7 @@ export class AuthService {
    */
   public checkRecoveryToken(user: UserLoginToken): Observable<Users> {
     return this.http.post<Response<Users>>(`${this.api}/auth/checkRecoveryToken`, user).pipe(
-      catchApiError(this.snackBar),
-      map(res => res.result)
+      handleResponse(this.snackBar)
     );
   }
 
@@ -76,12 +75,11 @@ export class AuthService {
    */
   public authenticate(entity: UserLogin): Observable<UserLoginToken> {
     return this.http.post<Response<UserLoginToken>>(`${this.api}/auth/login`, entity).pipe(
-      catchApiError(this.snackBar),
-      tap((response) => {
-        localStorage.setItem(this.key, JSON.stringify(response.result));
+      handleResponse(this.snackBar),
+      tap((result) => {
+        localStorage.setItem(this.key, JSON.stringify(result));
         this.isAuthenticated.next(true);
-      }),
-      map(res => res.result));
+      }));
   }
 
   /**
@@ -92,8 +90,8 @@ export class AuthService {
    */
   public sendRecovery(email: string): Observable<boolean> {
     return this.http.get<Response<boolean>>(`${this.api}/auth/sendRecovery`, { params: { email } }).pipe(
-      catchApiError(this.snackBar),
-      map(res => res.result));
+      handleResponse(this.snackBar)
+    );
   }
 
   /**
@@ -104,8 +102,7 @@ export class AuthService {
    */
   public updatePassword(user: Users): Observable<Users> {
     return this.http.post<Response<Users>>(`${this.api}/auth/updatePassword`, user).pipe(
-      catchApiError(this.snackBar),
-      map(res => res.result)
+      handleResponse(this.snackBar)
     );
   }
 }

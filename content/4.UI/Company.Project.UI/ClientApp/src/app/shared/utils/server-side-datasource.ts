@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatSort } from '@angular/material';
-import { tap, finalize } from 'rxjs/operators';
+import { tap, finalize, map } from 'rxjs/operators';
 import { Observable, merge, BehaviorSubject, Subscription } from 'rxjs';
 import { Page } from '../generics/models';
 
@@ -17,7 +17,7 @@ export class ServerSideDataSource<TEntity> extends DataSource<TEntity> {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$ = this.loadingSubject.asObservable();
 
-  constructor(private paginator: MatPaginator, private sort: MatSort) {
+  constructor(private paginator: MatPaginator, private sort: MatSort, private hasDetail = false) {
     super();
   }
 
@@ -38,11 +38,19 @@ export class ServerSideDataSource<TEntity> extends DataSource<TEntity> {
     this.dataSource(
       {
         pageIndex: this.paginator.pageIndex,
-        direction: this.sort.direction,
+        isAsc: this.sort.direction === 'asc',
         sortBy: this.sort.active,
         pageSize
       })
       .pipe(
+        map(r => {
+          if (this.hasDetail) {
+            const items = [];
+            r.items.forEach(i => items.push(i, { detailRow: true, detail: i }));
+            r.items = items;
+          }
+          return r;
+        }),
         finalize(() => this.loadingSubject.next(false))
       )
       .subscribe(page => {

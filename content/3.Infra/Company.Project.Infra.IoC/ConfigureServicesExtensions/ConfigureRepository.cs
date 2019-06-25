@@ -25,7 +25,8 @@
                 return configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
             });
             services.AddSingleton<IDbFactory, SQLiteFactory>();
-            services.AddTransient(typeof(IBaseRepository<>), typeof(SQLiteBaseRepository<>)); // typeof(EFSQLiteBaseRepository<>);
+            services.AddSingleton(typeof(IBaseRepository<>), typeof(SQLiteBaseRepository<>)); // typeof(EFSQLiteBaseRepository<>);
+            //services.AddSingleton(typeof(IBaseRepository<>), typeof(EFSQLiteBaseRepository<>)); // typeof(SQLiteBaseRepository<>);
         }
 
     }
