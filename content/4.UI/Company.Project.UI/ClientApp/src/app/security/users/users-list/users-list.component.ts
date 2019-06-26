@@ -4,19 +4,16 @@ import { ServerSideDataSource } from 'src/app/shared/utils/server-side-datasourc
 import { Users } from '../users.models';
 import { UserService } from '../services/user.service';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
-import { take } from 'rxjs/operators';
+import { take, map, tap, finalize } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { detailExpand } from 'src/app/shared/utils/animations';
+import { LoadingService } from 'src/app/shared/services/loading/loading.service';
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.scss'],
   animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
+    detailExpand
   ],
 })
 export class UsersListComponent implements OnInit {
@@ -32,6 +29,7 @@ export class UsersListComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private loading: LoadingService,
     private userService: UserService) {
   }
 
@@ -57,14 +55,21 @@ export class UsersListComponent implements OnInit {
   }
 
   export() {
-    const data = this.dataSource.getData().map(u => {
-      return {
-        Name: u.username
-      };
-    });
-    const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workBook, workSheet, 'Users');
-    XLSX.writeFile(workBook, 'users.xlsx', { bookType: 'xlsx', type: 'buffer' });
+    this.loading.show();
+    this.userService.getAll().pipe(
+      take(1),
+      tap(users => {
+        const data = users.map(u => ({
+          Username: u.username,
+          Email: u.email,
+          Role: u.roleId
+        }));
+        const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+        const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workBook, workSheet, 'Users');
+        XLSX.writeFile(workBook, 'users.xlsx', { bookType: 'xlsx', type: 'buffer' });
+      }),
+      finalize(() => this.loading.hide())
+    ).subscribe();
   }
 }

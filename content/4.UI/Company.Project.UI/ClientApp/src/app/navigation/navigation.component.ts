@@ -1,22 +1,24 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription, merge } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { openClose } from '../shared/utils/animations';
+
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss']
+  styleUrls: ['./navigation.component.scss'],
+  animations: [
+    openClose
+  ]
 })
 export class NavigationComponent implements OnInit, OnDestroy {
 
   private sub: Subscription;
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(
-      map(result => result.matches)
-    );
+  isHandset: boolean;
   navegationVisible: boolean;
 
   constructor(
@@ -26,7 +28,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.sub = this.auth.isAuthenticated.subscribe(value => this.navegationVisible = value);
+    this.sub = merge(this.auth.isAuthenticated.pipe(tap(v => this.navegationVisible = v)),
+      this.breakpointObserver.observe(Breakpoints.Handset).pipe(tap(v => this.isHandset = v.matches))).subscribe();
   }
 
   onClose() {

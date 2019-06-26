@@ -9,7 +9,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 const routes: Route[] = [
   { path: '', component: UsersComponent },
   { path: 'create', component: UserComponent },
-  { path: 'update:id', component: UserComponent }
+  { path: 'update/:id', component: UserComponent }
 ];
 
 @NgModule({

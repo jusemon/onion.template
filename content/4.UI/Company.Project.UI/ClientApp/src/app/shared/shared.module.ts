@@ -23,13 +23,15 @@ import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 import { InputDialogComponent } from './dialogs/input-dialog/input-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormComponent } from './components/form/form.component';
+import { TrimDirective } from './directives/trim.directive';
 
 @NgModule({
   declarations: [
     LoadingComponent,
     ConfirmComponent,
     InputDialogComponent,
-    FormComponent
+    FormComponent,
+    TrimDirective
   ],
   imports: [
     CommonModule,
@@ -58,7 +60,9 @@ import { FormComponent } from './components/form/form.component';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    FormComponent
+    FormComponent,
+    ReactiveFormsModule,
+    TrimDirective
   ],
   entryComponents: [ConfirmComponent, InputDialogComponent]
 })

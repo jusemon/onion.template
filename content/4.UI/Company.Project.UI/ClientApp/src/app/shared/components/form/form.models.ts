@@ -21,5 +21,7 @@ export interface FormConfig {
     fields: FormField[];
     title?: string;
     subtitle?: string;
+    appearance?: string;
+    colsPerRow?: number;
     validators?: FormDataValidator;
 }
