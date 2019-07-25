@@ -1,0 +1,32 @@
+.element-row {
+  cursor: pointer;
+
+  &:not(.example-expanded-row):hover {
+    background: #f5f5f5;
+  }
+
+  &:not(.example-expanded-row):active {
+    background: #efefef;
+  }
+
+  td {
+    border-bottom-width: 0;
+  }
+}
+
+.detail-row {
+  height: 0;
+
+  .gray-text {
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  .detail-container {
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    .detail-description {
+      padding: 16px;
+    }
+  }
+}

@@ -1,0 +1,4 @@
+<div class="container">
+  <app-form #form (submit)="onSubmit($event)" (cancel)="goBack()" [config]="config" [title]="editMode ? 'Update Action' : 'Create Action'">
+  </app-form>
+</div>
