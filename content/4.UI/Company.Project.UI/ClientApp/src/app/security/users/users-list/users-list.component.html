@@ -51,7 +51,7 @@
                       Updated by:
                     </td>
                     <td>
-                      {{row.detail.updatedByUser?.username || '-'}}
+                      {{row.detail.lastUpdatedByUser?.username || '-'}}
                     </td>
                   </tr>
                   <tr>
@@ -59,13 +59,13 @@
                       Created at:
                     </td>
                     <td>
-                      {{(row.detail.createdAt | date:'dd-MM-YYYY hh:mm') || '-'}}
+                      {{(row.detail.createdAt | date:'dd-MM-y hh:mm') || '-'}}
                     </td>
                     <td class="gray-text">
                       Updated at:
                     </td>
                     <td>
-                      {{(row.detail?.updatedAt | date:'dd-MM-YYYY hh:mm') || '-'}}
+                      {{(row.detail?.lastUpdatedAt | date:'dd-MM-y hh:mm') || '-'}}
                     </td>
                   </tr>
                 </tbody>
