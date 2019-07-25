@@ -114,7 +114,7 @@
             {
                 var con = this.securityContext;
                 var totalItems = con.Set<TEntity>().AsNoTracking().LongCount();
-                var offset = pageSize * (pageIndex - 1);
+                var offset = pageSize * pageIndex;
                 var query = con.Set<TEntity>().SortBy(this.props, sortBy, isAsc).Skip(offset).Take(pageSize)
                     .Include(e => e.CreatedByUser)
                     .Include(e => e.LastUpdatedByUser);

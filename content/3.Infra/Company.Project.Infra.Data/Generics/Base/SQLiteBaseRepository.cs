@@ -122,7 +122,7 @@
                 using (var con = this.dbFactory.GetConnection())
                 {
                     var tableName = typeof(TEntity).Name;
-                    var offset = pageSize * (pageIndex - 1);
+                    var offset = pageSize * pageIndex;
                     var totalItems = con.Query<long>($"SELECT COUNT(*) FROM {tableName}").FirstOrDefault();
                     var sortByQuery = GetSortBy(sortBy, isAsc);
                     var list = con.Query($@"SELECT T.*, UC.Id, UC.Username, UU.Id, UU.Username FROM {tableName} T 
