@@ -28,7 +28,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.sub = merge(this.auth.isAuthenticated.pipe(tap(v => this.navegationVisible = v)),
+    this.sub = merge(
+      this.auth.isAuthenticated.pipe(tap(v => {
+        this.navegationVisible = v;
+        if (!v) {
+          this.auth.clearToken();
+        }
+      })),
       this.breakpointObserver.observe(Breakpoints.Handset).pipe(tap(v => this.isHandset = v.matches))).subscribe();
   }
 

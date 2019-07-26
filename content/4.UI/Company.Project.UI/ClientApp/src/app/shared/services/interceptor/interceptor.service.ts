@@ -23,7 +23,7 @@ export class InterceptorService implements HttpInterceptor {
         if (error.status === 401) {
           this.authService.isAuthenticated.next(false);
           this.router.navigate(['/auth']);
-          this.snackBar.open('Auth denied.');
+          this.snackBar.open('Auth denied.', 'Dismiss', { duration: 3000 });
         }
         return throwError(error);
       }));
