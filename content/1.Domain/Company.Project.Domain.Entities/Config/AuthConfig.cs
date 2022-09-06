@@ -35,7 +35,7 @@
         /// <value>
         /// The in.
         /// </value>
-        public string In { get; set; }
+        public int In { get; set; }
 
         /// <summary>
         /// Gets or sets the type.
@@ -43,7 +43,7 @@
         /// <value>
         /// The type.
         /// </value>
-        public string Type { get; set; }
+        public int Type { get; set; }
 
         /// <summary>
         /// Gets or sets the description.

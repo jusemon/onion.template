@@ -12,9 +12,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
-    using Swashbuckle.AspNetCore.Swagger;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
     using System.Text;
@@ -51,7 +49,7 @@
             var authConfig = Configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
             var dbConfig = Configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSpaStaticFiles(c => c.RootPath = "ClientApp/dist/ClientApp");
             services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString), ServiceLifetime.Singleton);
             services.ConfigureRepository();
@@ -80,19 +78,24 @@
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "AppTitle API", Version = "v1" });
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "AppTitle API", Version = "v1" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-                c.AddSecurityDefinition(authConfig.Type, new ApiKeyScheme
+                var scheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Description = authConfig.Description,
                     Name = authConfig.Name,
-                    In = authConfig.In,
-                    Type = authConfig.Type
-                });
-                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
-                    { authConfig.Type, new string [0] }
+                    In = (Microsoft.OpenApi.Models.ParameterLocation) authConfig.In,
+                    Type = (Microsoft.OpenApi.Models.SecuritySchemeType) authConfig.Type,
+                    Reference = {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme
+                    }
+                };
+                c.AddSecurityDefinition(scheme.Reference.Id, scheme);
+                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement {
+                    { scheme, Array.Empty<string>() }
                 });
             });
         }
