@@ -8,9 +8,7 @@
     using Interfaces.Security;
     using Interfaces.Security.DTOs;
     using Microsoft.AspNetCore.WebUtilities;
-    using System;
     using System.IO;
-    using System.Linq;
 
     /// <summary>
     /// User Application class.

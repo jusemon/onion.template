@@ -11,6 +11,7 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
     using System;
     using System.IO;
@@ -49,13 +50,13 @@
             var authConfig = Configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
             var dbConfig = Configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
             services.AddSpaStaticFiles(c => c.RootPath = "ClientApp/dist/ClientApp");
             services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString), ServiceLifetime.Singleton);
             services.ConfigureRepository();
             services.ConfigureService();
             services.ConfigureApplication();
-            services.Configure<MvcJsonOptions>(x =>
+            services.Configure<MvcNewtonsoftJsonOptions>(x =>
             {
                 x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
@@ -82,13 +83,14 @@
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+                var inasd = (Microsoft.OpenApi.Models.ParameterLocation) authConfig.In;
                 var scheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Description = authConfig.Description,
                     Name = authConfig.Name,
                     In = (Microsoft.OpenApi.Models.ParameterLocation) authConfig.In,
                     Type = (Microsoft.OpenApi.Models.SecuritySchemeType) authConfig.Type,
-                    Reference = {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference {
                         Id = JwtBearerDefaults.AuthenticationScheme,
                         Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme
                     }
@@ -106,7 +108,7 @@
         /// </summary>
         /// <param name="app">The application.</param>
         /// <param name="env">The env.</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -120,7 +122,9 @@
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
