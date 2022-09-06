@@ -7,7 +7,6 @@
     using Interfaces.Generics;
     using Interfaces.Security;
     using Interfaces.Security.DTOs;
-    using Microsoft.AspNetCore.WebUtilities;
     using System.IO;
 
     /// <summary>
@@ -73,8 +72,8 @@
                 }
 
                 var template = File.ReadAllText("Templates/EmailRecovery.cshtml");
-                var urlToken = QueryHelpers.AddQueryString($"{uri}/{{0}}", new { token = user?.Token, id = user?.Id.ToString() }.AsDictionary<string>());
-                emailService.Send(user.Email, "Recuperar Contraseña", template, new { Name = user.Username, UrlBase = uri, UrlToken = urlToken }.ToDynamic(), true);
+                var urlToken = uri.AddQueryString(new { token = user?.Token, id = user?.Id.ToString() });
+                emailService.Send(user!.Email, "Recuperar Contraseña", template, new { Name = user.Username, UrlBase = uri, UrlToken = urlToken }.ToDynamic(), true);
                 return true;
             });
         }
@@ -104,11 +103,8 @@
                 var currentUser = this.userService.CheckRecoveryToken(user.Id, user.Token);
                 currentUser.Password = user.Password;
                 this.userService.Update(currentUser);
-                if (currentUser != null)
-                {
-                    var template = File.ReadAllText("Templates/PasswordChanged.cshtml");
-                    emailService.Send(user.Email, "Tu contraseña de AppTitle ha cambiado", template, new { Name = user.Username, UrlBase = uri }.ToDynamic(), true);
-                }
+                var template = File.ReadAllText("Templates/PasswordChanged.cshtml");
+                emailService.Send(user.Email, "Tu contraseña de AppTitle ha cambiado", template, new { Name = user.Username, UrlBase = uri }.ToDynamic(), true);
                 return currentUser;
             });
         }

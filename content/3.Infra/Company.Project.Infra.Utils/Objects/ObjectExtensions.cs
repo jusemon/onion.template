@@ -5,6 +5,7 @@
     using System.Dynamic;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
 
     /// <summary>
     /// Object Extensions class. 
@@ -25,9 +26,7 @@
 
             foreach (var item in source)
             {
-                someObjectType
-                         .GetProperty(item.Key)
-                         .SetValue(someObject, item.Value, null);
+                someObjectType.GetProperty(item.Key)?.SetValue(someObject, item.Value, null);
             }
 
             return someObject;
@@ -46,7 +45,6 @@
                 propInfo => propInfo.Name,
                 propInfo => propInfo.GetValue(source, null)
             );
-
         }
 
         /// <summary>
@@ -61,8 +59,38 @@
             return source.GetType().GetProperties(bindingAttr).ToDictionary
             (
                 propInfo => propInfo.Name,
-                propInfo => (T)propInfo.GetValue(source, null)
+                propInfo => (T)propInfo.GetValue(source, null)!
             );
+        }
+
+        /// <summary>
+        /// Ases the dictionary.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">The source.</param>
+        /// <param name="bindingAttr">The binding attribute.</param>
+        /// <returns></returns>
+        public static string AddQueryString(this string requestUri, object source)
+        {
+            var dictionary = source.AsDictionary<string>();
+
+            bool startingQuestionMarkAdded = false;
+            var sb = new StringBuilder();
+            sb.Append(requestUri);
+            foreach (var parameter in dictionary)
+            {
+                if (parameter.Value == null)
+                {
+                    continue;
+                }
+
+                sb.Append(startingQuestionMarkAdded ? '&' : '?');
+                sb.Append(parameter.Key);
+                sb.Append('=');
+                sb.Append(parameter.Value);
+                startingQuestionMarkAdded = true;
+            }
+		    return sb.ToString();
         }
 
         /// <summary>
