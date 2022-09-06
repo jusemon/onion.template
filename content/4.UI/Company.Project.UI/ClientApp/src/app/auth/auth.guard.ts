@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean | UrlTree {
-    const inAuth = next.routeConfig.path === 'auth';
+    const inAuth = next?.routeConfig?.path === 'auth';
     if (this.auth.isAuthenticated.value) {
       return inAuth ? this.router.createUrlTree(['/home']) : true;
     }

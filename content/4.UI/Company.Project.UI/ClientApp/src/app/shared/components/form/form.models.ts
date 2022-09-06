@@ -1,7 +1,12 @@
-import { ValidationErrors } from '@angular/forms';
+import { ValidationErrors, ValidatorFn } from '@angular/forms';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 export interface FormDataValidator {
     [name: string]: { message: string, validator: ValidationErrors };
+}
+
+export interface FormDataValidatorFn {
+    [name: string]: { message: string, validator: ValidatorFn };
 }
 
 export interface FormResponse {
@@ -21,7 +26,7 @@ export interface FormConfig {
     fields: FormField[];
     title?: string;
     subtitle?: string;
-    appearance?: string;
+    appearance?: MatFormFieldAppearance;
     colsPerRow?: number;
-    validators?: FormDataValidator;
+    validators?: FormDataValidatorFn;
 }

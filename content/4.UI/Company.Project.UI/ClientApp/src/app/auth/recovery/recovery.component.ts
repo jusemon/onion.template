@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Validators } from '@angular/forms';
 import { Base64 } from 'src/app/shared/utils/base64';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize, take } from 'rxjs/operators';
 import { FormConfig, FormResponse } from 'src/app/shared/components/form/form.models';
 import { CustomValidators } from 'src/app/shared/utils/custom-validators';
@@ -16,8 +16,8 @@ import { Users } from 'src/app/security/users/users.models';
   styleUrls: ['./recovery.component.scss']
 })
 export class RecoveryComponent implements OnInit, OnDestroy {
-  user: Users;
-  title: string;
+  user?: Users;
+  title?: string;
   config: FormConfig = {
     fields: [{
       name: 'newPassword',
@@ -57,7 +57,7 @@ export class RecoveryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.queryParams.pipe(take(1)).subscribe((data) => {
-      const tokenUser = { token: data.token || null, id: data.id || null };
+      const tokenUser = { token: data['token'] || null, id: data['id'] || null };
       this.auth.checkRecoveryToken(tokenUser).subscribe(user => {
         this.user = user;
         this.user.token = tokenUser.token;
@@ -69,9 +69,9 @@ export class RecoveryComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(data: FormResponse) {
-    if (data.newPassword) {
+    if (data['newPassword'] && this.user) {
       this.loading.show();
-      this.user.password = Base64.encode(data.newPassword);
+      this.user.password = Base64.encode(data['newPassword']);
       this.auth.updatePassword(this.user).pipe(take(1), finalize(() => this.loading.hide())).subscribe(() => {
         this.router.navigate(['/auth']);
         this.snackBar.open('The password has been updated');

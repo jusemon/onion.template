@@ -1,8 +1,9 @@
-import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator, MatSort } from '@angular/material';
+import { DataSource} from '@angular/cdk/collections';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { tap, finalize, map } from 'rxjs/operators';
 import { Observable, merge, BehaviorSubject, Subscription } from 'rxjs';
-import { Page } from '../generics/models';
+import { Page, PageRequest } from '../generics/models';
 
 
 /**
@@ -11,17 +12,19 @@ import { Page } from '../generics/models';
  * (including sorting, pagination, and filtering).
  */
 export class ServerSideDataSource<TEntity> extends DataSource<TEntity> {
-  private dataSource: (params: { [x: string]: any; }) => Observable<Page<TEntity>>;
+  private dataSource?: (params: PageRequest) => Observable<Page<TEntity>>;
   private changesSub: Subscription = new Subscription();
   private itemsSubject = new BehaviorSubject<TEntity[]>([]);
-  private loadingSubject = new BehaviorSubject<boolean>(false);
+  private loadingSubject = new BehaviorSubject<boolean>(true);
+  public paginator!: MatPaginator;
+  public sort!: MatSort;
   loading$ = this.loadingSubject.asObservable();
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, private hasDetail = false) {
+  constructor(private hasDetail = false) {
     super();
   }
 
-  setDataSource(getPaginated: (params: { [x: string]: any; }) => Observable<Page<TEntity>>): void {
+  setDataSource(getPaginated: (params: PageRequest) => Observable<Page<TEntity>>): void {
     this.dataSource = getPaginated;
     this.changesSub.unsubscribe();
     this.changesSub = merge(this.sort.sortChange, this.paginator.page)
@@ -35,7 +38,7 @@ export class ServerSideDataSource<TEntity> extends DataSource<TEntity> {
   updateData() {
     this.loadingSubject.next(true);
     const pageSize = this.paginator.pageSize || 5;
-    this.dataSource(
+    this.dataSource!(
       {
         pageIndex: this.paginator.pageIndex,
         isAsc: this.sort.direction === 'asc',
@@ -45,7 +48,7 @@ export class ServerSideDataSource<TEntity> extends DataSource<TEntity> {
       .pipe(
         map(r => {
           if (this.hasDetail) {
-            const items = [];
+            const items: Array<any> = [];
             r.items.forEach(i => items.push(i, { detailRow: true, detail: i }));
             r.items = items;
           }

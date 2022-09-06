@@ -1,22 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatSnackBarModule,
-  MatToolbarModule,
-  MatButtonModule,
-  MatSidenavModule,
-  MatIconModule,
-  MatListModule,
-  MatCardModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatProgressSpinnerModule,
-  MatDialogModule,
-  MatProgressBarModule,
-  MatTableModule,
-  MatPaginatorModule,
-  MatSortModule,
-} from '@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { LayoutModule } from '@angular/cdk/layout';
 import { LoadingComponent } from './services/loading/loading.component';
 import { ConfirmComponent } from './dialogs/confirm/confirm.component';
@@ -31,7 +29,7 @@ import { TrimDirective } from './directives/trim.directive';
     ConfirmComponent,
     InputDialogComponent,
     FormComponent,
-    TrimDirective
+    TrimDirective,
   ],
   imports: [
     CommonModule,
@@ -42,7 +40,7 @@ import { TrimDirective } from './directives/trim.directive';
     MatDialogModule,
     MatInputModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
   ],
   exports: [
     LayoutModule,
@@ -62,8 +60,8 @@ import { TrimDirective } from './directives/trim.directive';
     MatSortModule,
     FormComponent,
     ReactiveFormsModule,
-    TrimDirective
+    TrimDirective,
   ],
-  entryComponents: [ConfirmComponent, InputDialogComponent]
+  entryComponents: [ConfirmComponent, InputDialogComponent],
 })
-export class SharedModule { }
+export class SharedModule {}

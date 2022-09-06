@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserLoginToken, UserLogin } from './login/login.models';
@@ -15,7 +15,7 @@ import { handleResponse } from '../shared/utils/rx-pipes';
 export class AuthService {
   api: string;
   key: string;
-  isAuthenticated = new BehaviorSubject(null);
+  isAuthenticated = new BehaviorSubject(false);
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar) {
     this.api = environment.api;
@@ -48,8 +48,8 @@ export class AuthService {
    */
   public getToken(): string {
     if (this.isAuthenticated.value) {
-      const user: UserLoginToken = JSON.parse(localStorage.getItem(this.key));
-      return user.token;
+      const user: UserLoginToken = JSON.parse(localStorage.getItem(this.key)!);
+      return user.token!;
     } else {
       return '';
     }

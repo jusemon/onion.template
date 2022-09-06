@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Dict } from '../../generics/models';
 import { InputDialogData } from './input-dialog.models';
 
 @Component({
@@ -16,7 +17,7 @@ export class InputDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: InputDialogData) { }
 
   ngOnInit() {
-    const form = {};
+    const form: Dict<any> = {};
     this.data.fields.forEach(field => {
       const value = field.value || null;
       const validators = [];

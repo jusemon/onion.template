@@ -11,7 +11,7 @@ export class TrimDirective {
   @HostListener('change', ['$event.target.value'])
   onChange(value: any) {
     if (typeof(value) === 'string') {
-      this.ngControl.control.setValue(value.trim());
+      this.ngControl.control?.setValue(value.trim());
     }
   }
 }

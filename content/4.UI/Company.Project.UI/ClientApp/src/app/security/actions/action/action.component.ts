@@ -3,7 +3,7 @@ import { FormComponent } from 'src/app/shared/components/form/form.component';
 import { FormConfig } from 'src/app/shared/components/form/form.models';
 import { Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoadingService } from 'src/app/shared/services/loading/loading.service';
 import { ActionService } from '../services/action.service';
 import { take, finalize } from 'rxjs/operators';
@@ -15,9 +15,9 @@ import { Actions } from '../actions.models';
   styleUrls: ['./action.component.scss']
 })
 export class ActionComponent implements OnInit, OnDestroy {
-  @ViewChild('form') appForm: FormComponent;
-  editMode: boolean;
-  id: number;
+  @ViewChild('form') appForm?: FormComponent;
+  editMode: boolean = false;
+  id: number = 0;
 
   config: FormConfig = {
     appearance: 'standard',
@@ -55,17 +55,17 @@ export class ActionComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.params.pipe(take(1)).subscribe((data) => {
-      this.editMode = typeof (data.id) !== 'undefined';
+      this.editMode = typeof (data['id']) !== 'undefined';
       if (this.editMode) {
-        this.id = data.id;
-        this.get(data.id);
+        this.id = data['id'];
+        this.get(data['id']);
       }
     });
   }
 
   get(id: number) {
     this.actionService.get(id).pipe(take(1)).subscribe((action) => {
-      this.appForm.form.setValue({
+      this.appForm?.form.setValue({
         name: action.name,
         description: action.description
       });

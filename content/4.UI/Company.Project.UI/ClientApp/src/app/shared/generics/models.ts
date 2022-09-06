@@ -23,3 +23,14 @@ export interface Page<TEntity> {
     totalItems: number;
     items: TEntity[];
 }
+
+export interface Dict<TEntity> {
+    [key: string]: TEntity;
+}
+
+export interface PageRequest {
+    pageIndex: number;
+    isAsc: boolean;
+    sortBy: string;
+    pageSize: number;
+}

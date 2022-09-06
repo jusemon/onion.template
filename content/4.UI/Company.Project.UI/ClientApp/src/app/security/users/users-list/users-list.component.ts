@@ -1,5 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTable, MatDialog, MatSnackBar } from '@angular/material';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTable} from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ServerSideDataSource } from 'src/app/shared/utils/server-side-datasource';
 import { Users } from '../users.models';
 import { UserService } from '../services/user.service';
@@ -16,14 +20,14 @@ import { LoadingService } from 'src/app/shared/services/loading/loading.service'
     detailExpand
   ],
 })
-export class UsersListComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatTable) table: MatTable<any>;
+export class UsersListComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatTable) table?: MatTable<any>;
 
-  dataSource: ServerSideDataSource<Users>;
+  dataSource!: ServerSideDataSource<Users>;
   displayedColumns = ['username', 'email', 'roleId', 'actions'];
-  expandedElement: Users;
+  expandedElement?: Users;
   isExpansionDetailRow = (i: number, row: any) => row.hasOwnProperty('detailRow');
 
   constructor(
@@ -34,8 +38,13 @@ export class UsersListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataSource = new ServerSideDataSource(this.paginator, this.sort, true);
-    this.dataSource.setDataSource((params: { [x: string]: any }) => this.userService.getPaged(params));
+    this.dataSource = new ServerSideDataSource(true);
+  }
+  
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.setDataSource((params) => this.userService.getPaged(params));
   }
 
   refresh() {

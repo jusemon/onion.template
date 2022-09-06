@@ -3,7 +3,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UserLogin } from './login.models';
 import { AuthService } from '../auth.service';
 import { take, finalize } from 'rxjs/operators';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Base64 } from 'src/app/shared/utils/base64';
 import { LoadingService } from 'src/app/shared/services/loading/loading.service';
@@ -19,8 +20,8 @@ import { InputDialogComponent } from 'src/app/shared/dialogs/input-dialog/input-
 export class LoginComponent implements OnInit {
 
   authForm = this.fb.group({
-    username: [null, Validators.required],
-    password: [null, Validators.required]
+    username: ['', Validators.required],
+    password: ['', Validators.required]
   });
 
   recoveryPasswordData: InputDialogData = {
@@ -60,7 +61,7 @@ export class LoginComponent implements OnInit {
       .beforeClosed().pipe(take(1)).subscribe((result: InputDialogResponse) => {
         if (result) {
           this.loading.show();
-          this.auth.sendRecovery(result.email).pipe(take(1), finalize(() => this.loading.hide())).subscribe(() => {
+          this.auth.sendRecovery(result['email']).pipe(take(1), finalize(() => this.loading.hide())).subscribe(() => {
             this.snackBar.open(`Please check your mailbox`, 'Dismiss', { duration: 3000 });
           });
         }
@@ -69,8 +70,8 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     if (this.authForm.valid) {
-      const user: UserLogin = this.authForm.value;
-      user.password = Base64.encode(user.password);
+      const user = this.authForm.value as UserLogin;
+      user.password = Base64.encode(user.password!);
       this.loading.show();
       this.auth.authenticate(user).pipe(take(1), finalize(() => this.loading.hide())).subscribe(() => {
         this.snackBar.open(`User "${user.username}" has logged on.`, 'Dismiss', { duration: 3000 });

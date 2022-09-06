@@ -1,5 +1,6 @@
 import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { Observable, merge, Subject } from 'rxjs';
 
@@ -23,7 +24,7 @@ export class ClientSideDataSource<TEntity> extends DataSource<TEntity> {
    */
   public setData(data: TEntity[]) {
     this.data = data;
-    this.recordChange$.next();
+    this.recordChange$.next(data);
   }
 
   /**
@@ -79,7 +80,7 @@ export class ClientSideDataSource<TEntity> extends DataSource<TEntity> {
       const fields = Object.getOwnPropertyNames(a);
       const selectedField = fields[fields.indexOf(this.sort.active)];
       if (typeof (selectedField) !== 'undefined') {
-        return compare(a[selectedField], b[selectedField], isAsc);
+        return compare((a as any)[selectedField], (b as any)[selectedField], isAsc);
       }
       return 0;
     });
@@ -87,6 +88,6 @@ export class ClientSideDataSource<TEntity> extends DataSource<TEntity> {
 }
 
 /** Simple sort comparator for example ID/Name columns (for client-side sorting). */
-function compare(a, b, isAsc) {
+function compare(a: any, b: any, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }

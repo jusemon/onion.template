@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Base64 } from 'src/app/shared/utils/base64';
 import { finalize, take } from 'rxjs/operators';
 import { LoadingService } from 'src/app/shared/services/loading/loading.service';
@@ -16,10 +16,10 @@ import { FormComponent } from 'src/app/shared/components/form/form.component';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit, OnDestroy {
-  @ViewChild('form') appForm: FormComponent;
-  editMode: boolean;
+  @ViewChild('form') appForm?: FormComponent;
+  editMode: boolean = false;
   defaultPass = '**********';
-  id: number;
+  id: number = 0;
 
   config: FormConfig = {
     appearance: 'standard',
@@ -81,10 +81,10 @@ export class UserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.params.pipe(take(1)).subscribe((data) => {
-      this.editMode = typeof (data.id) !== 'undefined';
+      this.editMode = typeof (data['id']) !== 'undefined';
       if (this.editMode) {
-        this.id = data.id;
-        this.get(data.id);
+        this.id = data['id'];
+        this.get(data['id']);
       }
     });
   }
@@ -92,7 +92,7 @@ export class UserComponent implements OnInit, OnDestroy {
   get(id: number) {
     this.userService.get(id).pipe(take(1)).subscribe((user) => {
       user.password = this.defaultPass;
-      this.appForm.form.setValue({
+      this.appForm?.form.setValue({
         username: user.username,
         email: user.email,
         roleId: user.roleId,

@@ -1,5 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTable, MatDialog, MatSnackBar } from '@angular/material';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTable} from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { take, tap, finalize } from 'rxjs/operators';
 import { Actions } from '../actions.models';
 import { ActionService } from '../services/action.service';
@@ -17,14 +21,14 @@ import * as XLSX from 'xlsx';
     detailExpand
   ],
 })
-export class ActionsListComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatTable) table: MatTable<any>;
+export class ActionsListComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatTable) table?: MatTable<any>;
 
-  dataSource: ServerSideDataSource<Actions>;
+  dataSource!: ServerSideDataSource<Actions>;
   displayedColumns = ['name', 'description', 'actions'];
-  expandedElement: Actions;
+  expandedElement?: Actions;
   isExpansionDetailRow = (i: number, row: any) => row.hasOwnProperty('detailRow');
 
   constructor(
@@ -34,9 +38,14 @@ export class ActionsListComponent implements OnInit {
     private actionService: ActionService) {
   }
 
-  ngOnInit() {
-    this.dataSource = new ServerSideDataSource(this.paginator, this.sort, true);
-    this.dataSource.setDataSource((params: { [x: string]: any }) => this.actionService.getPaged(params));
+  ngOnInit(): void {
+    this.dataSource = new ServerSideDataSource(true);
+  }
+  
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.setDataSource((params) => this.actionService.getPaged(params));
   }
 
   refresh() {

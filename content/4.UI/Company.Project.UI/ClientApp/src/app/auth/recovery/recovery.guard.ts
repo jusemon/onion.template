@@ -8,7 +8,7 @@ export class RecoveryGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean | UrlTree {
-      if ((next.queryParams.token || false) && (next.queryParams.id || false)) {
+      if ((next.queryParams['token'] || false) && (next.queryParams['id'] || false)) {
         return true;
       }
       return this.router.createUrlTree(['/auth']);

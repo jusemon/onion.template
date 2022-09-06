@@ -9,7 +9,7 @@
         <ng-template [ngIf]="fields">
           <div *ngFor="let controls of fields" class="row">
             <div *ngFor="let control of controls" class="col">
-              <mat-form-field [appearance]="config.appearance || 'outline'" class="full-width">
+              <mat-form-field [appearance]="config.appearance || defaultAppareance" class="full-width">
                 <mat-label>{{control.label}}</mat-label>
                 <input [formControlName]="control.name" [type]="control.type || 'text'" [autocomplete]="control.name"
                   matInput>
@@ -22,7 +22,7 @@
           </div>
         </ng-template>
         <mat-error *ngFor="let error of form?.errors | keyvalue">
-          <span [innerHTML]="config.validators[error.key].message"></span>
+          <span [innerHTML]="config!.validators![error!.key].message || ''"></span>
         </mat-error>
       </mat-card-content>
       <mat-card-actions>

@@ -1,7 +1,7 @@
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Base, Response, Page } from '../generics/models';
 import { AuthService } from 'src/app/auth/auth.service';
 import { handleResponse } from './rx-pipes';

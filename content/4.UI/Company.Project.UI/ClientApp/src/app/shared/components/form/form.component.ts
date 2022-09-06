@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ValidationErrors, FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, AbstractControlOptions, ValidatorFn } from '@angular/forms';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { Dict } from '../../generics/models';
 import { FormConfig, FormField } from './form.models';
 
 @Component({
@@ -9,8 +11,9 @@ import { FormConfig, FormField } from './form.models';
 })
 export class FormComponent implements OnInit {
   form: FormGroup = this.fb.group({});
-  fields: FormField[][];
-  @Input() config: FormConfig;
+  fields?: FormField[][];
+  defaultAppareance: MatFormFieldAppearance = 'outline';
+  @Input() config!: FormConfig;
   @Input() title?: string;
   @Input() subtitle?: string;
   @Output() submit = new EventEmitter();
@@ -20,8 +23,8 @@ export class FormComponent implements OnInit {
   ngOnInit() {
     this.title = this.title || this.config.title;
     this.subtitle = this.subtitle || this.config.subtitle;
-    const current = {};
-    const generalValidators: ValidationErrors[] = [];
+    const current: Dict<any> = {};
+    const generalValidators: ValidatorFn[] = [];
     this.config.fields.forEach(field => {
       const value = field.value || null;
       const validators = [];
@@ -37,8 +40,9 @@ export class FormComponent implements OnInit {
         generalValidators.push(this.config.validators[key].validator);
       }
     }
+    const options: AbstractControlOptions  = { validators: generalValidators };
     this.fields = this.splitArray(this.config.fields, this.config.colsPerRow);
-    this.form = this.fb.group(current, { validators: generalValidators });
+    this.form = this.fb.group(current, options);
   }
 
   splitArray<T>(array: Array<T>, l?: number): Array<Array<T>> {

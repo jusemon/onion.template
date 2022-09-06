@@ -1,6 +1,6 @@
 import { tap, map } from 'rxjs/operators';
 import { Response } from '../generics/models';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export function handleResponse<TEntity>(snackBar?: MatSnackBar) {
     return map((response: Response<TEntity>) => {

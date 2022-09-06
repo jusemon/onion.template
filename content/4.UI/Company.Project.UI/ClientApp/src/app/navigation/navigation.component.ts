@@ -17,9 +17,9 @@ import { openClose } from '../shared/utils/animations';
 })
 export class NavigationComponent implements OnInit, OnDestroy {
 
-  private sub: Subscription;
-  isHandset: boolean;
-  navegationVisible: boolean;
+  private sub?: Subscription;
+  isHandset?: boolean;
+  navegationVisible?: boolean;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -44,6 +44,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    this.sub?.unsubscribe();
   }
 }
