@@ -24,12 +24,12 @@
         {
             services.AddSingleton((provider) =>
             {
-                var configuration = provider.GetService<IConfiguration>();
+                var configuration = provider.GetRequiredService<IConfiguration>();
                 return configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
             });
             services.AddSingleton((provider) =>
             {
-                var configuration = provider.GetService<IConfiguration>();
+                var configuration = provider.GetRequiredService<IConfiguration>();
                 return configuration.GetSection(nameof(EmailConfig)).Get<EmailConfig>();
             });
             services.AddTransient(typeof(IBaseService<>), typeof(BaseService<>));

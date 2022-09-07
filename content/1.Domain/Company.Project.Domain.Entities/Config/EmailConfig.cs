@@ -6,28 +6,12 @@
     public class EmailConfig
     {
         /// <summary>
-        /// Gets or sets the server.
-        /// </summary>
-        /// <value>
-        /// The server.
-        /// </value>
-        public string Server { get; set; }
-
-        /// <summary>
         /// Gets or sets the username.
         /// </summary>
         /// <value>
         /// The username.
         /// </value>
-        public string Username { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password.
-        /// </summary>
-        /// <value>
-        /// The password.
-        /// </value>
-        public string Password { get; set; }
+        public string ApiKey { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the sender.
@@ -35,6 +19,6 @@
         /// <value>
         /// The sender.
         /// </value>
-        public string Sender { get; set; }
+        public string Sender { get; set; } = null!;
     }
 }

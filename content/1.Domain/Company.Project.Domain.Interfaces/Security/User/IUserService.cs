@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="email">The email.</param>
         /// <returns></returns>
-        Users GetUserWithRecoveryToken(string email);
+        Users? GetUserWithRecoveryToken(string email);
 
         /// <summary>
         /// Checks the recovery token.

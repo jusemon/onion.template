@@ -37,7 +37,7 @@
         /// <param name="context">The <see cref="T:Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext" />.</param>
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var controller = (context.ActionDescriptor as ControllerActionDescriptor).ControllerName.ToLower();
+            var controller = (context.ActionDescriptor as ControllerActionDescriptor)!.ControllerName.ToLower();
             var claimValue = this.Template.Replace("[controller]", controller);
             if (context.HttpContext.User.HasClaim(claim =>
                 claim.Type == CustomClaimTypes.Permission && claim.Value == claimValue))

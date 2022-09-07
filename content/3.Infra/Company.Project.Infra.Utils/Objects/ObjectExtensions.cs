@@ -43,7 +43,7 @@
             return source.GetType().GetProperties(bindingAttr).ToDictionary
             (
                 propInfo => propInfo.Name,
-                propInfo => propInfo.GetValue(source, null)
+                propInfo => propInfo.GetValue(source, null)!
             );
         }
 
@@ -98,9 +98,9 @@
         /// </summary>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        public static dynamic ToDynamic(this object source)
+        public static dynamic? ToDynamic(this object source)
         {
-            IDictionary<string, object> expando = new ExpandoObject();
+            IDictionary<string, object?> expando = new ExpandoObject();
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source.GetType()))
             {
                 expando.Add(property.Name, property.GetValue(source));

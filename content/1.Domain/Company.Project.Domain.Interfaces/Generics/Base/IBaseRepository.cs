@@ -46,7 +46,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        Page<TEntity> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true);
+        Page<TEntity> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true);
 
         /// <summary>
         /// Updates the specified entity.

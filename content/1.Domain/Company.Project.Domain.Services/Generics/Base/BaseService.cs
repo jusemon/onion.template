@@ -26,7 +26,7 @@
         /// <value>
         /// The validator.
         /// </value>
-        protected AbstractValidator<TEntity> Validator { get; set; }
+        protected AbstractValidator<TEntity>? Validator { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseService{TEntity}"/> class.
@@ -95,7 +95,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
+        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
         {
             return this.baseRepository.Read(pageIndex, pageSize, sortBy, isAsc);
         }

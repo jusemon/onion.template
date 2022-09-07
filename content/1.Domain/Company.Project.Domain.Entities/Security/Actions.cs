@@ -17,7 +17,7 @@
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the description.
@@ -25,7 +25,7 @@
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the permissions.
@@ -34,6 +34,6 @@
         /// The permissions.
         /// </value>
         [Computed]
-        public virtual ICollection<Permissions> Permissions { get; set; }
+        public virtual ICollection<Permissions>? Permissions { get; set; }
     }
 }

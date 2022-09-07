@@ -94,7 +94,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public override Page<Users> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
+        public override Page<Users> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
         {
             var page = base.Read(pageIndex, pageSize, sortBy, isAsc);
             page.Items = page.Items.Select(u => {
@@ -111,7 +111,7 @@
         /// <returns></returns>
         public override bool Create(Users entity)
         {
-            entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)));
+            entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password!)));
             var res = base.Create(entity);
             entity.Password = string.Empty;
             return res;
@@ -147,7 +147,7 @@
         {
             var result = this.baseRepository.Read((u) => u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             var hash = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(password)));
-            if (result != null && Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(password))))
+            if (result != null && Cryptography.Validate(result.Password!, Encoding.UTF8.GetString(Convert.FromBase64String(password))))
             {
                 result.Token = this.GetToken(result, this.authConfig.Key, authConfig.SessionTimeout);
                 return result;
@@ -160,7 +160,7 @@
         /// </summary>
         /// <param name="email">The email.</param>
         /// <returns></returns>
-        public Users GetUserWithRecoveryToken(string email)
+        public Users? GetUserWithRecoveryToken(string email)
         {
             var user = new Users { Email = email };
             user = this.baseRepository.Read(u => email.ToUpperInvariant()?.Trim() == u.Email?.ToUpperInvariant()?.Trim()).FirstOrDefault();
@@ -168,7 +168,7 @@
             {
                 return null;
             }
-            user.Token = this.GetToken(user, user.Password, 12);
+            user.Token = this.GetToken(user, user.Password!, 12);
             return user;
         }
 
@@ -186,7 +186,7 @@
             try
             {
                 var currentUser = this.baseRepository.Read(id);
-                var key = Encoding.UTF8.GetBytes(currentUser.Password);
+                var key = Encoding.UTF8.GetBytes(currentUser.Password!);
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {

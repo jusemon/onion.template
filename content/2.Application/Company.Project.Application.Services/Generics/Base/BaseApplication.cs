@@ -75,7 +75,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public virtual Response<Page<TEntity>> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
+        public virtual Response<Page<TEntity>> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
         {
             return ApplicationExtensions.Try(() => this.baseService.Read(pageIndex, pageSize, sortBy, isAsc));
         }

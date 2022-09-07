@@ -33,7 +33,7 @@
         /// The roles.
         /// </value>
         [Computed]
-        public virtual Roles Role { get; set; }
+        public virtual Roles? Role { get; set; }
 
         /// <summary>
         /// Gets or sets the actions.
@@ -42,6 +42,6 @@
         /// The actions.
         /// </value>
         [Computed]
-        public virtual Actions Action { get; set; }
+        public virtual Actions? Action { get; set; }
     }
 }

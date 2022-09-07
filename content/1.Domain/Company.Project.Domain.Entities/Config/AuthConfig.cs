@@ -11,7 +11,7 @@
         /// <value>
         /// The key.
         /// </value>
-        public string Key { get; set; }
+        public string Key { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the session timeout.
@@ -27,7 +27,7 @@
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the in.
@@ -51,7 +51,6 @@
         /// <value>
         /// The description.
         /// </value>
-        public string Description { get; set; }
-
+        public string Description { get; set; } = null!;
     }
 }

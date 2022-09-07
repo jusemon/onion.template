@@ -1,7 +1,7 @@
 ﻿namespace Company.Project.Domain.Entities.Generics.Base
 {
     using System;
-    using Company.Project.Domain.Entities.Security;
+    using Security;
     using Dapper.Contrib.Extensions;
 
     /// <summary>
@@ -56,7 +56,7 @@
         /// The created by user.
         /// </value>
         [Computed]
-        public virtual Users CreatedByUser { get; set; }
+        public virtual Users? CreatedByUser { get; set; }
 
         /// <summary>
         /// Gets or sets the last updated by user.
@@ -65,6 +65,6 @@
         /// The last updated by user.
         /// </value>
         [Computed]
-        public virtual Users LastUpdatedByUser { get; set; }
+        public virtual Users? LastUpdatedByUser { get; set; }
     }
 }

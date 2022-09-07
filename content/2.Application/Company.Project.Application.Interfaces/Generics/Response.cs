@@ -14,7 +14,7 @@
         /// <value>
         /// The exception message.
         /// </value>
-        public string ExceptionMessage { get; set; }
+        public string? ExceptionMessage { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the exception.
@@ -30,7 +30,7 @@
         /// <value>
         /// The result.
         /// </value>
-        public TResult Result { get; set; }
+        public TResult? Result { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is success.

@@ -39,6 +39,6 @@
         /// <value>
         /// The items.
         /// </value>
-        public IEnumerable<TEntity> Items { get; set; }
+        public IEnumerable<TEntity> Items { get; set; } = null!;
     }
 }

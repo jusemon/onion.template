@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="message">The message.</param>
-        public AppException(AppExceptionTypes type, string message) : base(message)
+        public AppException(AppExceptionTypes type, string? message) : base(message)
         {
             this.Type = type;
         }

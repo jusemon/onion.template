@@ -115,7 +115,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
+        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
         {
             return this.Try(() =>
             {
@@ -211,7 +211,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        protected string GetSortBy(string sortBy, bool isAsc)
+        protected string GetSortBy(string? sortBy, bool isAsc)
         {
             var sortByQuery = string.Empty;
             if (!string.IsNullOrEmpty(sortBy))

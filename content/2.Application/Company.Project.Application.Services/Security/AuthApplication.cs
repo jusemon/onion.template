@@ -45,12 +45,12 @@
         {
             return ApplicationExtensions.Try(() =>
             {
-                var result = this.userService.Login(user.Username, user.Password);
+                var result = this.userService.Login(user.Username!, user.Password!);
                 return new UserLoginToken {
                     Id = result.Id,
                     Username = result.Username,
                     Email = result.Email,
-                    Token = result.Token
+                    Token = result.Token!
                 };
             });
         }
@@ -100,7 +100,7 @@
         {
             return ApplicationExtensions.Try(() =>
             {
-                var currentUser = this.userService.CheckRecoveryToken(user.Id, user.Token);
+                var currentUser = this.userService.CheckRecoveryToken(user.Id, user.Token!);
                 currentUser.Password = user.Password;
                 this.userService.Update(currentUser);
                 var template = File.ReadAllText("Templates/PasswordChanged.cshtml");

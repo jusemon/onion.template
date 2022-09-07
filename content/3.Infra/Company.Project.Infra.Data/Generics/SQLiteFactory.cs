@@ -27,7 +27,7 @@
         /// <param name="config">The configuration.</param>
         public SQLiteFactory(DatabaseConfig config)
         {
-            this.dbFile = config.DbFile;
+            this.dbFile = config.DbFile!;
             this.connectionString = config.ConnectionString;
 
             if (!File.Exists(this.dbFile))

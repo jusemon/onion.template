@@ -4,18 +4,16 @@
     using FluentEmail.Core;
     using FluentEmail.Core.Models;
     using FluentEmail.Razor;
-    using FluentEmail.Smtp;
+    using FluentEmail.SendGrid;
     using Interfaces.Email;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
-    using System.Net.Mail;
 
     /// <summary>
     /// Email Service class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Interfaces.Email.IEmailService" />
-    public class EmailService : IEmailService
+        public class EmailService : IEmailService
     {
         /// <summary>
         /// The sender
@@ -23,9 +21,10 @@
         private readonly string sender;
 
         /// <summary>
-        /// The client
+        /// The api key
         /// </summary>
-        private readonly SmtpClient client;
+        private readonly string apiKey;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailService"/> class.
@@ -34,10 +33,7 @@
         public EmailService(EmailConfig emailConfig)
         {
             this.sender = emailConfig.Sender;
-
-            this.client = new SmtpClient(emailConfig.Server);
-            client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(emailConfig.Username, emailConfig.Password);
+            this.apiKey = emailConfig.ApiKey;
         }
 
         /// <summary>
@@ -107,10 +103,10 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        public void Send(IEnumerable<string> destinataries, string subject, string body, dynamic parameters, bool isHtml)
+        public void Send(IEnumerable<string> destinataries, string subject, string body, dynamic? parameters, bool isHtml)
         {
             Email.DefaultRenderer = new RazorRenderer();
-            Email.DefaultSender = new SmtpSender(this.client);
+            Email.DefaultSender = new SendGridSender(this.apiKey);
             Email.From(this.sender)
                 .To(destinataries.Select(destinatary => new Address(destinatary)).ToList())
                 .Subject(subject)

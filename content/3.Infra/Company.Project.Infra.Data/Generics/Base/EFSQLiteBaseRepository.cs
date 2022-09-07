@@ -96,7 +96,12 @@
             return this.Try(() =>
             {
                 var con = this.securityContext;
-                return con.Set<TEntity>().AsNoTracking().FirstOrDefault(e => e.Id == id);
+                var result = con.Set<TEntity>().AsNoTracking().FirstOrDefault(e => e.Id == id);
+                if (result == null)
+                {
+                    throw new AppException(AppExceptionTypes.Database, "Not found");
+                }
+                return result;
             });
         }
 
@@ -108,7 +113,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
+        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
         {
             return this.Try(() =>
             {
@@ -219,7 +224,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public static IOrderedQueryable<TEntity> SortBy<TEntity>(this IQueryable<TEntity> q, PropertyDescriptorCollection props, string sortBy, bool isAsc) where TEntity : BaseEntity
+        public static IOrderedQueryable<TEntity> SortBy<TEntity>(this IQueryable<TEntity> q, PropertyDescriptorCollection props, string? sortBy, bool isAsc) where TEntity : BaseEntity
         {
             if (!string.IsNullOrEmpty(sortBy))
             {

@@ -19,7 +19,7 @@
         /// <value>
         /// The username.
         /// </value>
-        public string Username { get; set; }
+        public string Username { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the email.
@@ -27,7 +27,7 @@
         /// <value>
         /// The email.
         /// </value>
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the token.
@@ -35,6 +35,6 @@
         /// <value>
         /// The token.
         /// </value>
-        public string Token { get; set; }
+        public string Token { get; set; } = null!;
     }
 }

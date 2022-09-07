@@ -33,7 +33,7 @@
         /// <value>
         /// The actions.
         /// </value>
-        public virtual DbSet<Actions> Actions { get; set; }
+        public virtual DbSet<Actions> Actions { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the menus.
@@ -41,7 +41,7 @@
         /// <value>
         /// The menus.
         /// </value>
-        public virtual DbSet<Menus> Menus { get; set; }
+        public virtual DbSet<Menus> Menus { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the permissions.
@@ -49,7 +49,7 @@
         /// <value>
         /// The permissions.
         /// </value>
-        public virtual DbSet<Permissions> Permissions { get; set; }
+        public virtual DbSet<Permissions> Permissions { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the roles.
@@ -57,7 +57,7 @@
         /// <value>
         /// The roles.
         /// </value>
-        public virtual DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<Roles> Roles { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the users.
@@ -65,7 +65,7 @@
         /// <value>
         /// The users.
         /// </value>
-        public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Users> Users { get; set; } = null!;
 
         /// <summary>
         /// Override this method to further configure the model that was discovered by convention from the entity types

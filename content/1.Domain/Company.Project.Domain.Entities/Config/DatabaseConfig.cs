@@ -11,7 +11,7 @@
         /// <value>
         /// The connection string.
         /// </value>
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the database file.
@@ -19,6 +19,6 @@
         /// <value>
         /// The database file.
         /// </value>
-        public string DbFile { get; set; }
+        public string? DbFile { get; set; }
     }
 }

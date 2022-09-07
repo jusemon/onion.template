@@ -21,7 +21,7 @@
         {
             services.AddSingleton((provider) =>
             {
-                var configuration = provider.GetService<IConfiguration>();
+                var configuration = provider.GetRequiredService<IConfiguration>();
                 return configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
             });
             services.AddSingleton<IDbFactory, SQLiteFactory>();

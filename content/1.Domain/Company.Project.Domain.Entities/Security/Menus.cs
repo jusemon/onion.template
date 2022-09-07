@@ -16,7 +16,7 @@
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the icon.
@@ -24,7 +24,7 @@
         /// <value>
         /// The icon.
         /// </value>
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// Gets or sets the position.
@@ -49,6 +49,6 @@
         /// The permissions.
         /// </value>
         [Computed]
-        public virtual Actions Action { get; set; }
+        public virtual Actions? Action { get; set; }
     }
 }

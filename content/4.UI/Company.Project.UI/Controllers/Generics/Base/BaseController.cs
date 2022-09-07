@@ -40,7 +40,7 @@
         [ValidateClaim("[controller].create")]
         public virtual ActionResult<Response<bool>> Create([FromBody] TEntity entity)
         {
-            entity.CreatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            entity.CreatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return this.baseApplication.Create(entity);
         }
 
@@ -89,7 +89,7 @@
         /// <returns></returns>
         [HttpGet("Paged")]
         [ValidateClaim("[controller].read")]
-        public virtual ActionResult<Response<Page<TEntity>>> Read(int pageIndex, int pageSize, string sortBy = null, bool isAsc = true)
+        public virtual ActionResult<Response<Page<TEntity>>> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
         {
             return this.baseApplication.Read(pageIndex, pageSize, sortBy, isAsc);
         }
@@ -103,7 +103,7 @@
         [ValidateClaim("[controller].update")]
         public virtual ActionResult<Response<bool>> Update([FromBody] TEntity entity)
         {
-            entity.LastUpdatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            entity.LastUpdatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return this.baseApplication.Update(entity);
         }
     }

@@ -17,7 +17,7 @@
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is admin.
@@ -34,9 +34,9 @@
         /// The permissions.
         /// </value>
         [Computed]
-        public virtual ICollection<Permissions> Permissions { get; set; }
+        public virtual ICollection<Permissions>? Permissions { get; set; }
 
         [Computed]
-        public virtual ICollection<Users> Users { get; set; }
+        public virtual ICollection<Users>? Users { get; set; }
     }
 }
