@@ -2,9 +2,9 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Onion.Template</id>
-    <version>1.0.1</version>
+    <version>6.0.8</version>
     <description>
-      Plantilla backend onion base
+      .NET backend + Angular frontend template.
     </description>
     <authors>Juan S Montoya</authors>
     <packageTypes>
