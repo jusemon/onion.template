@@ -2,7 +2,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Base, Response, Page } from '../generics/models';
+import { Base, Page } from '../generics/models';
 import { AuthService } from 'src/app/auth/auth.service';
 import { handleResponse } from './rx-pipes';
 
@@ -46,8 +46,8 @@ export class BaseService<TEntity extends Base> {
      */
     public getAll(urlController?: string): Observable<TEntity[]> {
         const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-        return this.http.get<Response<TEntity[]>>(`${this.api}/${controller}/`, this.getOptions())
-            .pipe(handleResponse<TEntity[]>());
+        return this.http.get<TEntity[]>(`${this.api}/${controller}/`, this.getOptions())
+            .pipe(handleResponse(this.snackBar));
     }
 
     /**
@@ -58,8 +58,8 @@ export class BaseService<TEntity extends Base> {
      */
     public getPaged(params: { [x: string]: any }, urlController?: string): Observable<Page<TEntity>> {
         const controller = typeof (urlController) !== 'undefined' ? urlController : `${this.urlController}/paged`;
-        return this.http.get<Response<Page<TEntity>>>(`${this.api}/${controller}/`, this.getOptions(params))
-            .pipe(handleResponse());
+        return this.http.get<Page<TEntity>>(`${this.api}/${controller}/`, this.getOptions(params))
+            .pipe(handleResponse(this.snackBar));
     }
 
     /**
@@ -71,8 +71,8 @@ export class BaseService<TEntity extends Base> {
      */
     public get(id: number, urlController?: string): Observable<TEntity> {
         const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-        return this.http.get<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions())
-            .pipe(handleResponse());
+        return this.http.get<TEntity>(`${this.api}/${controller}/${id}`, this.getOptions())
+            .pipe(handleResponse(this.snackBar));
     }
 
     /**
@@ -84,8 +84,8 @@ export class BaseService<TEntity extends Base> {
      */
     public create(entity: TEntity, urlController?: string): Observable<TEntity> {
         const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-        return this.http.post<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions())
-            .pipe(handleResponse());
+        return this.http.post<TEntity>(`${this.api}/${controller}/`, entity, this.getOptions())
+            .pipe(handleResponse(this.snackBar));
     }
 
     /**
@@ -97,8 +97,8 @@ export class BaseService<TEntity extends Base> {
      */
     public update(entity: TEntity, urlController?: string): Observable<TEntity | any> {
         const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-        return this.http.put<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions())
-            .pipe(handleResponse());
+        return this.http.put<TEntity>(`${this.api}/${controller}/`, entity, this.getOptions())
+            .pipe(handleResponse(this.snackBar));
     }
 
     /**
@@ -110,7 +110,7 @@ export class BaseService<TEntity extends Base> {
      */
     public delete(id: number, urlController?: string): Observable<TEntity> {
         const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-        return this.http.delete<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions())
-            .pipe(handleResponse());
+        return this.http.delete<TEntity>(`${this.api}/${controller}/${id}`, this.getOptions())
+            .pipe(handleResponse(this.snackBar));
     }
 }

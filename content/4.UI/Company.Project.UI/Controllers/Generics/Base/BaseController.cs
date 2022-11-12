@@ -38,10 +38,11 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateClaim("[controller].create")]
-        public virtual ActionResult<Response<bool>> Create([FromBody] TEntity entity)
+        public virtual async Task<ActionResult<bool>> Create([FromBody] TEntity entity)
         {
-            entity.CreatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            return this.baseApplication.Create(entity);
+            entity.CreatedBy = Convert.ToUInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var response = await this.baseApplication.Create(entity);
+            return GetResponse(response);
         }
 
         /// <summary>
@@ -51,9 +52,10 @@
         /// <returns></returns>
         [HttpDelete("{id}")]
         [ValidateClaim("[controller].delete")]
-        public virtual ActionResult<Response<bool>> Delete(int id)
+        public virtual async Task<ActionResult<bool>> Delete(ulong id)
         {
-            return this.baseApplication.Delete(id);
+            var response = await this.baseApplication.Delete(id);
+            return GetResponse(response);
         }
 
         /// <summary>
@@ -62,9 +64,10 @@
         /// <returns></returns>
         [HttpGet]
         [ValidateClaim("[controller].read")]
-        public virtual ActionResult<Response<IEnumerable<TEntity>>> Read()
+        public virtual async Task<ActionResult<IEnumerable<TEntity>>> Read()
         {
-            return this.baseApplication.Read();
+            var response = await this.baseApplication.Read();
+            return GetResponse(response);
         }
 
         /// <summary>
@@ -74,9 +77,10 @@
         /// <returns></returns>
         [HttpGet("{id}")]
         [ValidateClaim("[controller].read")]
-        public virtual ActionResult<Response<TEntity>> Read(int id)
+        public virtual async Task<ActionResult<TEntity?>> Read(ulong id)
         {
-            return this.baseApplication.Read(id);
+            var response = await this.baseApplication.Read(id);
+            return GetResponse(response);
         }
 
         /// <summary>
@@ -89,9 +93,10 @@
         /// <returns></returns>
         [HttpGet("Paged")]
         [ValidateClaim("[controller].read")]
-        public virtual ActionResult<Response<Page<TEntity>>> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
+        public virtual async Task<ActionResult<Page<TEntity>>> Read(uint pageIndex, uint pageSize, string? sortBy = null, bool isAsc = true)
         {
-            return this.baseApplication.Read(pageIndex, pageSize, sortBy, isAsc);
+            var response = await this.baseApplication.Read(pageIndex, pageSize, sortBy, isAsc);
+            return GetResponse(response);
         }
 
         /// <summary>
@@ -101,10 +106,32 @@
         /// <returns></returns>
         [HttpPut]
         [ValidateClaim("[controller].update")]
-        public virtual ActionResult<Response<bool>> Update([FromBody] TEntity entity)
+        public virtual async Task<ActionResult<bool>> Update([FromBody] TEntity entity)
         {
-            entity.LastUpdatedBy = Convert.ToInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            return this.baseApplication.Update(entity);
+            entity.LastUpdatedBy = Convert.ToUInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var response = await this.baseApplication.Update(entity);
+            return GetResponse(response);
+
+        }
+
+        /// <summary>
+        /// Get the result from the response when is success otherwise a BadRequest
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <returns></returns>
+        protected ActionResult<TResult> GetResponse<TResult>(Response<TResult> response)
+        {
+            if (response.IsSuccess)
+            {
+                return response.Result!;
+            }
+
+            if (response.ExceptionType == Infra.Utils.Exceptions.AppExceptionTypes.Database && response.ExceptionMessage!.Contains("Not found"))
+            {
+                return NotFound(new { response.ExceptionType, response.ExceptionMessage });
+            }
+
+            return BadRequest(new { response.ExceptionType, response.ExceptionMessage });
         }
     }
 }

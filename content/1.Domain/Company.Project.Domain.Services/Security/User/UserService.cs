@@ -19,24 +19,24 @@
     /// <summary>
     /// User Service class. 
     /// </summary>
-    /// <seealso cref="Company.Project.Domain.Services.Generics.Base.BaseService{Company.Project.Domain.Entities.Security.Users}" />
+    /// <seealso cref="Company.Project.Domain.Services.Generics.Base.BaseService{Company.Project.Domain.Entities.Security.User}" />
     /// <seealso cref="Company.Project.Domain.Interfaces.Security.User.IUserService" />
-    public class UserService : BaseService<Users>, IUserService
+    public class UserService : BaseService<User>, IUserService
     {
         /// <summary>
         /// The base repository
         /// </summary>
-        private readonly IBaseRepository<Users> baseRepository;
+        private readonly IBaseRepository<User> baseRepository;
 
         /// <summary>
         /// The permission repository
         /// </summary>
-        private readonly IBaseRepository<Permissions> permissionRepository;
+        private readonly IBaseRepository<Permission> permissionRepository;
 
         /// <summary>
         /// The action repository
         /// </summary>
-        private readonly IBaseRepository<Entities.Security.Actions> actionRepository;
+        private readonly IBaseRepository<Entities.Security.Activity> actionRepository;
 
         /// <summary>
         /// The authentication configuration
@@ -51,9 +51,9 @@
         /// <param name="actionRepository">The action repository.</param>
         /// <param name="authConfig">The authentication configuration.</param>
         public UserService(
-            IBaseRepository<Users> baseRepository,
-            IBaseRepository<Permissions> permissionRepository,
-            IBaseRepository<Actions> actionRepository,
+            IBaseRepository<User> baseRepository,
+            IBaseRepository<Permission> permissionRepository,
+            IBaseRepository<Activity> actionRepository,
             AuthConfig authConfig) : base(baseRepository)
         {
             this.baseRepository = baseRepository;
@@ -66,9 +66,9 @@
         /// Reads all.
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<Users> Read()
+        public override async Task<IEnumerable<User>> Read()
         {
-            return base.Read().Select(u=> {
+            return (await base.Read()).Select(u=> {
                 u.Password = string.Empty;
                 return u;
             });
@@ -79,10 +79,13 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public override Users Read(int id)
+        public override async Task<User?> Read(ulong id)
         {
-            var user = base.Read(id);
-            user.Password = string.Empty;
+            var user = await base.Read(id);
+            if (user != null)
+            {
+                user.Password = string.Empty;
+            }
             return user;
         }
 
@@ -94,9 +97,9 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public override Page<Users> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
+        public override async Task<Page<User>> Read(uint pageIndex, uint pageSize, string? sortBy = null, bool isAsc = true)
         {
-            var page = base.Read(pageIndex, pageSize, sortBy, isAsc);
+            var page = await base.Read(pageIndex, pageSize, sortBy, isAsc);
             page.Items = page.Items.Select(u => {
                 u.Password = string.Empty;
                 return u;
@@ -109,10 +112,10 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public override bool Create(Users entity)
+        public override async Task<bool> Create(User entity)
         {
             entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password!)));
-            var res = base.Create(entity);
+            var res = await base.Create(entity);
             entity.Password = string.Empty;
             return res;
         }
@@ -122,7 +125,7 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public override bool Update(Users entity)
+        public override async Task<bool> Update(User entity)
         {
             if (!string.IsNullOrWhiteSpace(entity.Password))
             {
@@ -130,10 +133,13 @@
             }
             else
             {
-                var old = this.baseRepository.Read(entity.Id);
-                entity.Password = old.Password;
+                var old = await this.baseRepository.Read(entity.Id);
+                if (old != null)
+                {
+                    entity.Password = old.Password;
+                }
             }
-            var res = base.Update(entity);
+            var res = await base.Update(entity);
             entity.Password = string.Empty;
             return res;
         }
@@ -143,13 +149,14 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <exception cref="AppException">Usuario o contraseña incorrectos.</exception>
-        public Users Login(string username, string password)
+        public async Task<User> Login(string username, string password)
         {
-            var result = this.baseRepository.Read((u) => u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-            var hash = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(password)));
-            if (result != null && Cryptography.Validate(result.Password!, Encoding.UTF8.GetString(Convert.FromBase64String(password))))
+            var passwordDecoded = Encoding.UTF8.GetString(Convert.FromBase64String(password));
+            var result = (await this.baseRepository.Read((u) => u.Username.ToLower().Equals(username.ToLower()))).FirstOrDefault();
+            var hash = Cryptography.GetHash(passwordDecoded);
+            if (result != null && Cryptography.Validate(result.Password!, passwordDecoded))
             {
-                result.Token = this.GetToken(result, this.authConfig.Key, authConfig.SessionTimeout);
+                result.Token = await this.GetToken(result, this.authConfig.Key, authConfig.SessionTimeout);
                 return result;
             }
             throw new AppException(AppExceptionTypes.Validation, "Usuario o contraseña incorrectos.");
@@ -160,15 +167,14 @@
         /// </summary>
         /// <param name="email">The email.</param>
         /// <returns></returns>
-        public Users? GetUserWithRecoveryToken(string email)
+        public async Task<User?> GetUserWithRecoveryToken(string email)
         {
-            var user = new Users { Email = email };
-            user = this.baseRepository.Read(u => email.ToUpperInvariant()?.Trim() == u.Email?.ToUpperInvariant()?.Trim()).FirstOrDefault();
+            var user = (await this.baseRepository.Read(u => u.Email.ToLower().Equals(email.ToLower()))).FirstOrDefault();
             if (user == null)
             {
                 return null;
             }
-            user.Token = this.GetToken(user, user.Password!, 12);
+            user.Token = await this.GetToken(user, user.Password!, 12);
             return user;
         }
 
@@ -181,11 +187,15 @@
         /// <exception cref="AppException">Enlace de recuperación inválido.
         /// or
         /// El enlace de recuperación ha expirado.</exception>
-        public Users CheckRecoveryToken(long id, string token)
+        public async Task<User> CheckRecoveryToken(ulong id, string token)
         {
             try
             {
-                var currentUser = this.baseRepository.Read(id);
+                var currentUser = await this.baseRepository.Read(id);
+                if (currentUser == null)
+                {
+                    throw new AppException(AppExceptionTypes.Validation, "Enlace de recuperación inválido.");
+                }
                 var key = Encoding.UTF8.GetBytes(currentUser.Password!);
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -224,11 +234,11 @@
         /// <param name="secretKey">The secret key.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns></returns>
-        private string GetToken(Users user, string secretKey, int timeout)
+        private async Task<string> GetToken(User user, string secretKey, int timeout)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.Default.GetBytes(secretKey);
-            var claims = this.GetClaims(user);
+            var claims = await this.GetClaims(user);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
@@ -245,14 +255,14 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        private List<Claim> GetClaims(Users user)
+        private async Task<List<Claim>> GetClaims(User user)
         {
             var claims = new List<Claim> {
                             new Claim(ClaimTypes.Name, user.Username),
                             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                         };
-            var permissions = this.permissionRepository.Read((p) => p.RoleId == user.RoleId).Select(p => p.ActionId).ToList();
-            var customClaims = this.actionRepository.Read((a) => permissions.Contains(a.Id)).Select(p =>
+            var permissions = (await this.permissionRepository.Read((p) => p.RoleId == user.RoleId)).Select(p => p.ActionId).ToList();
+            var customClaims = (await this.actionRepository.Read((a) => permissions.Contains(a.Id))).Select(p =>
                 new Claim(CustomClaimTypes.Permission, p.Name)
             );
             claims.AddRange(customClaims);

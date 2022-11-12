@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper.Contrib" Version="1.60.1" />
-  </ItemGroup>
-
 </Project>

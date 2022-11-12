@@ -7,6 +7,7 @@
     using Interfaces.Generics.Base;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// Base Service class. 
@@ -42,7 +43,7 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public virtual bool Create(TEntity entity)
+        public virtual Task<bool> Create(TEntity entity)
         {
             this.Validate(entity);
             return this.baseRepository.Create(entity);
@@ -53,7 +54,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual bool Delete(int id)
+        public virtual Task<bool> Delete(ulong id)
         {
             return this.baseRepository.Delete(id);
         }
@@ -62,7 +63,7 @@
         /// Reads all.
         /// </summary>
         /// <returns></returns>
-        public virtual IEnumerable<TEntity> Read()
+        public virtual Task<IEnumerable<TEntity>> Read()
         {
             return this.baseRepository.Read();
         }
@@ -72,7 +73,7 @@
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns></returns>
-        public virtual IEnumerable<TEntity> Read(System.Func<TEntity, bool> filter)
+        public virtual Task<IEnumerable<TEntity>> Read(Expression<Func<TEntity, bool>> filter)
         {
             return this.baseRepository.Read(filter);
         }
@@ -82,7 +83,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual TEntity Read(int id)
+        public virtual Task<TEntity?> Read(ulong id)
         {
             return this.baseRepository.Read(id);
         }
@@ -95,7 +96,7 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
+        public virtual Task<Page<TEntity>> Read(uint pageIndex, uint pageSize, string? sortBy = null, bool isAsc = true)
         {
             return this.baseRepository.Read(pageIndex, pageSize, sortBy, isAsc);
         }
@@ -105,7 +106,7 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public virtual bool Update(TEntity entity)
+        public virtual Task<bool> Update(TEntity entity)
         {
             this.Validate(entity);
             return this.baseRepository.Update(entity);

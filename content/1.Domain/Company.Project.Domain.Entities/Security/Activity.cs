@@ -1,14 +1,13 @@
 ﻿namespace Company.Project.Domain.Entities.Security
 {
-    using Dapper.Contrib.Extensions;
     using Generics.Base;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Action class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    [Table("Menus")]
-    public class Menus : BaseEntity
+    public class Activity : BaseEntity
     {
         /// <summary>
         /// Gets or sets the name.
@@ -19,28 +18,12 @@
         public string Name { get; set; } = null!;
 
         /// <summary>
-        /// Gets or sets the icon.
+        /// Gets or sets the description.
         /// </summary>
         /// <value>
-        /// The icon.
+        /// The description.
         /// </value>
-        public string? Icon { get; set; }
-
-        /// <summary>
-        /// Gets or sets the position.
-        /// </summary>
-        /// <value>
-        /// The position.
-        /// </value>
-        public int Position { get; set; }
-
-        /// <summary>
-        /// Gets or sets the action identifier.
-        /// </summary>
-        /// <value>
-        /// The action identifier.
-        /// </value>
-        public long ActionId { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the permissions.
@@ -48,7 +31,6 @@
         /// <value>
         /// The permissions.
         /// </value>
-        [Computed]
-        public virtual Actions? Action { get; set; }
+        public virtual ICollection<Permission>? Permissions { get; set; }
     }
 }

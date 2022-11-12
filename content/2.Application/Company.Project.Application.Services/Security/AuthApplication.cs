@@ -41,11 +41,11 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public Response<UserLoginToken> Login(UserLogin user)
+        public Task<Response<UserLoginToken>> Login(UserLogin user)
         {
-            return ApplicationExtensions.Try(() =>
+            return ApplicationExtensions.TryAsync(async () =>
             {
-                var result = this.userService.Login(user.Username!, user.Password!);
+                var result = await this.userService.Login(user.Username!, user.Password!);
                 return new UserLoginToken {
                     Id = result.Id,
                     Username = result.Username,
@@ -61,11 +61,11 @@
         /// <param name="email">The email.</param>
         /// <param name="uri">The URI.</param>
         /// <returns></returns>
-        public Response<bool> SendRecovery(string email, string uri)
+        public Task<Response<bool>> SendRecovery(string email, string uri)
         {
-            return ApplicationExtensions.Try(() =>
+            return ApplicationExtensions.TryAsync(async () =>
             {
-                var user = this.userService.GetUserWithRecoveryToken(email);
+                var user = await this.userService.GetUserWithRecoveryToken(email);
                 if (user == null)
                 {
                     return false;
@@ -83,9 +83,9 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public Response<Users> CheckRecoveryToken(UserLoginToken user)
+        public Task<Response<User>> CheckRecoveryToken(UserLoginToken user)
         {
-            return ApplicationExtensions.Try(() => 
+            return ApplicationExtensions.TryAsync(() => 
                 this.userService.CheckRecoveryToken(user.Id, user.Token)
             );
         }
@@ -96,13 +96,13 @@
         /// <param name="user">The user.</param>
         /// <param name="uri">The URI.</param>
         /// <returns></returns>
-        public Response<Users> UpdatePassword(Users user, string uri)
+        public Task<Response<User>> UpdatePassword(User user, string uri)
         {
-            return ApplicationExtensions.Try(() =>
+            return ApplicationExtensions.TryAsync(async () =>
             {
-                var currentUser = this.userService.CheckRecoveryToken(user.Id, user.Token!);
+                var currentUser = await this.userService.CheckRecoveryToken(user.Id, user.Token!);
                 currentUser.Password = user.Password;
-                this.userService.Update(currentUser);
+                await this.userService.Update(currentUser);
                 var template = File.ReadAllText("Templates/PasswordChanged.cshtml");
                 emailService.Send(user.Email, "Tu contraseña de AppTitle ha cambiado", template, new { Name = user.Username, UrlBase = uri }.ToDynamic(), true);
                 return currentUser;

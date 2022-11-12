@@ -1,6 +1,5 @@
 ﻿namespace Company.Project.Domain.Entities.Security
 {
-    using Dapper.Contrib.Extensions;
     using Generics.Base;
     using System.Collections.Generic;
 
@@ -8,8 +7,7 @@
     /// Role class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    [Table("Roles")]
-    public class Roles : BaseEntity
+    public class Role : BaseEntity
     {
         /// <summary>
         /// Gets or sets the name.
@@ -33,10 +31,15 @@
         /// <value>
         /// The permissions.
         /// </value>
-        [Computed]
-        public virtual ICollection<Permissions>? Permissions { get; set; }
+        public virtual ICollection<Permission>? Permissions { get; set; }
 
-        [Computed]
-        public virtual ICollection<Users>? Users { get; set; }
+
+        /// <summary>
+        /// Gets or sets the users.
+        /// </summary>
+        /// <value>
+        /// The users.
+        /// </value>
+        public virtual ICollection<User>? Users { get; set; }
     }
 }

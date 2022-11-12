@@ -11,14 +11,14 @@
     /// <seealso cref="Generics.Base.BaseController{Action}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class ActionController : BaseController<Actions>
+    public class ActivityController : BaseController<Activity>
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActionController"/> class.
+        /// Initializes a new instance of the <see cref="ActivityController"/> class.
         /// </summary>
         /// <param name="baseApplication">The base application.</param>
-        public ActionController(IBaseApplication<Actions> baseApplication) : base(baseApplication)
+        public ActivityController(IBaseApplication<Activity> baseApplication) : base(baseApplication)
         {
 
         }

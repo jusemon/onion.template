@@ -15,20 +15,20 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        Response<bool> Create(TEntity entity);
+        Task<Response<bool>> Create(TEntity entity);
 
         /// <summary>
         /// Reads all.
         /// </summary>
         /// <returns></returns>
-        Response<IEnumerable<TEntity>> Read();
+        Task<Response<IEnumerable<TEntity>>> Read();
 
         /// <summary>
         /// Reads by the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Response<TEntity> Read(int id);
+        Task<Response<TEntity?>> Read(ulong id);
 
         /// <summary>
         /// Reads with paged results.
@@ -38,20 +38,20 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        Response<Page<TEntity>> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true);
+        Task<Response<Page<TEntity>>> Read(uint pageIndex, uint pageSize, string? sortBy = null, bool isAsc = true);
 
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        Response<bool> Update(TEntity entity);
+        Task<Response<bool>> Update(TEntity entity);
 
         /// <summary>
         /// Deletes by the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Response<bool> Delete(int id);
+        Task<Response<bool>> Delete(ulong id);
     }
 }

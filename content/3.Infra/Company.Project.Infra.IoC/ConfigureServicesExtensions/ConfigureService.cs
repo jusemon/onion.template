@@ -1,6 +1,7 @@
 ﻿namespace Company.Project.Infra.IoC.ConfigureServicesExtensions
 {
     using Domain.Entities.Config;
+    using Domain.Entities.Security;
     using Domain.Interfaces.Email;
     using Domain.Interfaces.Generics.Base;
     using Domain.Interfaces.Security.User;
@@ -33,6 +34,7 @@
                 return configuration.GetSection(nameof(EmailConfig)).Get<EmailConfig>();
             });
             services.AddTransient(typeof(IBaseService<>), typeof(BaseService<>));
+            services.AddTransient(typeof(IBaseService<User>), typeof(UserService));
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IEmailService, EmailService>();
         }

@@ -1,14 +1,13 @@
 ﻿namespace Company.Project.Domain.Entities.Security
 {
-    using Dapper.Contrib.Extensions;
+    using System.ComponentModel.DataAnnotations.Schema;
     using Generics.Base;
 
     /// <summary>
     /// User class.
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    [Table("Users")]
-    public class Users : BaseEntity
+    public class User : BaseEntity
     {
         /// <summary>
         /// Gets or sets the username.
@@ -40,7 +39,7 @@
         /// <value>
         /// The role identifier.
         /// </value>
-        public long RoleId { get; set; }
+        public ulong RoleId { get; set; }
 
         /// <summary>
         /// Gets or sets the token.
@@ -48,7 +47,7 @@
         /// <value>
         /// The token.
         /// </value>
-        [Computed]
+        [NotMapped]
         public string? Token { get; set; }
 
         /// <summary>
@@ -57,7 +56,7 @@
         /// <value>
         /// The roles.
         /// </value>
-        [Computed]
-        public virtual Roles? Role { get; set; }
+        [NotMapped]
+        public virtual Role? Role { get; set; }
     }
 }

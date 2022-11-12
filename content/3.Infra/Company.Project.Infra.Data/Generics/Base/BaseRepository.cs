@@ -6,9 +6,8 @@
     using Domain.Interfaces.Generics.Base;
     using Microsoft.EntityFrameworkCore;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Linq;
+    using System.Linq.Expressions;
     using Utils.Exceptions;
 
     /// <summary>
@@ -16,7 +15,7 @@
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <seealso cref="Company.Project.Domain.Interfaces.Generics.Base.IBaseRepository{TEntity}" />
-    public class EFSQLiteBaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity, new()
     {
         /// <summary>
         /// The security context
@@ -32,7 +31,7 @@
         /// Initializes a new instance of the <see cref="SQLiteBaseRepository{TEntity}"/> class.
         /// </summary>
         /// <param name="dbFactory">The database factory.</param>
-        public EFSQLiteBaseRepository(SecurityContext securityContext)
+        public BaseRepository(SecurityContext securityContext)
         {
             this.securityContext = securityContext;
             this.props = TypeDescriptor.GetProperties(typeof(TEntity));
@@ -43,14 +42,14 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public virtual bool Create(TEntity entity)
+        public virtual Task<bool> Create(TEntity entity)
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
-                entity.CreatedAt = DateTime.Now;
+                entity.CreatedAt = DateTime.UtcNow;
                 con.Add(entity);
-                con.SaveChanges();
+                await con.SaveChangesAsync();
                 entity.Id = entity.Id;
                 return true;
 
@@ -61,12 +60,13 @@
         /// Reads all.
         /// </summary>
         /// <returns></returns>
-        public virtual IEnumerable<TEntity> Read()
+        public virtual Task<IEnumerable<TEntity>> Read()
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
-                return con.Set<TEntity>().AsNoTracking().ToList();
+                var items = await con.Set<TEntity>().AsNoTracking().ToListAsync();
+                return items.AsEnumerable();
             });
         }
 
@@ -74,15 +74,15 @@
         /// Reads by the specified filter.
         /// </summary>
         /// <param name="filter">The filter.</param>
-        /// <returns></returns>
-        public virtual IEnumerable<TEntity> Read(Func<TEntity, bool> filter)
+        /// <returns></returns>c
+        public virtual Task<IEnumerable<TEntity>> Read(Expression<Func<TEntity, bool>> filter)
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
-                var list = con.Set<TEntity>().AsNoTracking();
-                list = list.Where(e => filter(e));
-                return list.ToList();
+                var query = con.Set<TEntity>().Where(filter).AsNoTracking();
+                var items = await query.ToListAsync();
+                return items.AsEnumerable();
             });
         }
 
@@ -91,17 +91,12 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual TEntity Read(long id)
+        public virtual Task<TEntity?> Read(ulong id)
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
-                var result = con.Set<TEntity>().AsNoTracking().FirstOrDefault(e => e.Id == id);
-                if (result == null)
-                {
-                    throw new AppException(AppExceptionTypes.Database, "Not found");
-                }
-                return result;
+                return await con.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
             });
         }
 
@@ -113,22 +108,22 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public virtual Page<TEntity> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
+        public virtual Task<Page<TEntity>> Read(uint pageIndex, uint pageSize, string? sortBy = null, bool isAsc = true)
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
-                var totalItems = con.Set<TEntity>().AsNoTracking().LongCount();
                 var offset = pageSize * pageIndex;
-                var query = con.Set<TEntity>().SortBy(this.props, sortBy, isAsc).Skip(offset).Take(pageSize)
+                var totalItems = (ulong)await con.Set<TEntity>().AsNoTracking().LongCountAsync();
+                var items = await con.Set<TEntity>().SortBy(this.props, sortBy, isAsc).Skip((int)offset).Take((int)pageSize)
                     .Include(e => e.CreatedByUser)
-                    .Include(e => e.LastUpdatedByUser);
+                    .Include(e => e.LastUpdatedByUser).AsNoTracking().ToListAsync();
                 return new Page<TEntity>
                 {
                     PageIndex = pageIndex,
                     PageSize = pageSize,
                     TotalItems = totalItems,
-                    Items = query.AsNoTracking().ToList().Select(s =>
+                    Items = items.Select(s =>
                     {
                         if (s.CreatedByUser != null) s.CreatedByUser.Password = null;
                         if (s.LastUpdatedByUser != null) s.LastUpdatedByUser.Password = null;
@@ -138,21 +133,19 @@
             });
         }
 
-
-
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public virtual bool Update(TEntity entity)
+        public virtual Task<bool> Update(TEntity entity)
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
-                entity.LastUpdatedAt = DateTime.Now;
+                entity.LastUpdatedAt = DateTime.UtcNow;
                 con.Update(entity);
-                con.SaveChanges();
+                await con.SaveChangesAsync();
                 return true;
             });
         }
@@ -162,14 +155,14 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual bool Delete(int id)
+        public virtual Task<bool> Delete(ulong id)
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
                 TEntity entity = new TEntity { Id = id };
                 con.Remove(entity);
-                con.SaveChanges();
+                await con.SaveChangesAsync();
                 return true;
             });
         }
@@ -179,13 +172,13 @@
         /// </summary>
         /// <param name="ids">The ids.</param>
         /// <returns></returns>
-        public virtual bool Delete(IEnumerable<int> ids)
+        public virtual Task<bool> Delete(IEnumerable<ulong> ids)
         {
-            return this.Try(() =>
+            return this.Try(async () =>
             {
                 var con = this.securityContext;
                 con.RemoveRange(ids.Select(i => new TEntity { Id = i }));
-                con.SaveChanges();
+                await con.SaveChangesAsync();
                 return true;
             });
         }

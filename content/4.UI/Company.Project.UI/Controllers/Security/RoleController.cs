@@ -11,14 +11,14 @@
     /// <seealso cref="Generics.Base.BaseController{Role}" />
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : BaseController<Roles>
+    public class RoleController : BaseController<Role>
     {
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RoleController"/> class.
         /// </summary>
         /// <param name="baseApplication">The base application.</param>
-        public RoleController(IBaseApplication<Roles> baseApplication) : base(baseApplication)
+        public RoleController(IBaseApplication<Role> baseApplication) : base(baseApplication)
         {
 
         }

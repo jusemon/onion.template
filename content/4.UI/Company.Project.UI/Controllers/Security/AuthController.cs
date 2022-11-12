@@ -38,9 +38,10 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("Login")]
-        public virtual ActionResult<Response<UserLoginToken>> Login([FromBody] UserLogin entity)
+        public virtual async Task<ActionResult<UserLoginToken>> Login([FromBody] UserLogin entity)
         {
-            return this.authApplication.Login(entity);
+            var result = await this.authApplication.Login(entity);
+            return GetResponse(result);
         }
 
 
@@ -51,11 +52,12 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("SendRecovery")]
-        public Response<bool> SendRecovery(string email)
+        public async Task<ActionResult<bool>> SendRecovery(string email)
         {
 
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            return this.authApplication.SendRecovery(email, uri);
+            var result = await this.authApplication.SendRecovery(email, uri);
+            return GetResponse(result);
         }
 
         /// <summary>
@@ -65,9 +67,10 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("CheckRecoveryToken")]
-        public Response<Users> CheckRecoveryToken([FromBody] UserLoginToken user)
+        public async Task<ActionResult<User>> CheckRecoveryToken([FromBody] UserLoginToken user)
         {
-            return this.authApplication.CheckRecoveryToken(user);
+            var result = await this.authApplication.CheckRecoveryToken(user);
+            return GetResponse(result);
         }
 
         /// <summary>
@@ -77,10 +80,31 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("UpdatePassword")]
-        public Response<Users> UpdatePassword([FromBody] Users user)
+        public async Task<ActionResult<User>> UpdatePassword([FromBody] User user)
         {
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            return this.authApplication.UpdatePassword(user, uri);
+            var result = await this.authApplication.UpdatePassword(user, uri);
+            return GetResponse(result);
+        }
+
+        /// <summary>
+        /// Get the result from the response when is success otherwise a BadRequest
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <returns></returns>
+        protected ActionResult<TResult> GetResponse<TResult>(Response<TResult> response)
+        {
+            if (response.IsSuccess)
+            {
+                return response.Result!;
+            }
+
+            if (response.ExceptionType == Infra.Utils.Exceptions.AppExceptionTypes.Database && response.ExceptionMessage!.Contains("Not found"))
+            {
+                return NotFound(new { response.ExceptionType, response.ExceptionMessage });
+            }
+
+            return BadRequest(new { response.ExceptionType, response.ExceptionMessage });
         }
     }
 }

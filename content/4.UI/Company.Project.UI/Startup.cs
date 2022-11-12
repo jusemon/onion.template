@@ -1,14 +1,12 @@
 ﻿namespace Company.Project.UI
 {
     using Domain.Entities.Config;
-    using Infra.Data.Contexts;
     using Infra.IoC.ConfigureServicesExtensions;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.SpaServices.AngularCli;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -48,11 +46,9 @@
         public void ConfigureServices(IServiceCollection services)
         {
             var authConfig = Configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
-            var dbConfig = Configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
 
             services.AddControllers();
             services.AddSpaStaticFiles(c => c.RootPath = "ClientApp/dist/ClientApp");
-            services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString), ServiceLifetime.Singleton);
             services.ConfigureRepository();
             services.ConfigureService();
             services.ConfigureApplication();

@@ -4,6 +4,7 @@
     using Entities.Generics.Base;
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// Base Repository interface. 
@@ -16,27 +17,27 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        bool Create(TEntity entity);
+        Task<bool> Create(TEntity entity);
 
         /// <summary>
         /// Reads all.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<TEntity> Read();
+        Task<IEnumerable<TEntity>> Read();
 
         /// <summary>
         /// Reads by the specified filter.
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <returns></returns>
-        IEnumerable<TEntity> Read(Func<TEntity, bool> filter);
+        Task<IEnumerable<TEntity>> Read(Expression<Func<TEntity, bool>> filter);
 
         /// <summary>
         /// Reads by the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        TEntity Read(long id);
+        Task<TEntity?> Read(ulong id);
 
         /// <summary>
         /// Reads with paged results.
@@ -46,20 +47,20 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        Page<TEntity> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true);
+        Task<Page<TEntity>> Read(uint pageIndex, uint pageSize, string? sortBy = null, bool isAsc = true);
 
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        bool Update(TEntity entity);
+        Task<bool> Update(TEntity entity);
 
         /// <summary>
         /// Deletes by the specified identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        bool Delete(int id);
+        Task<bool> Delete(ulong id);
     }
 }

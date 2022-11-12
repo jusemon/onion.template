@@ -6,7 +6,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { UserLoginToken, UserLogin } from './login/login.models';
 import { Users } from '../security/users/users.models';
 import { tap } from 'rxjs/operators';
-import { Response } from '../shared/generics/models';
 import { handleResponse } from '../shared/utils/rx-pipes';
 
 @Injectable({
@@ -62,7 +61,7 @@ export class AuthService {
    * @returns A observable with the info of the user
    */
   public checkRecoveryToken(user: UserLoginToken): Observable<Users> {
-    return this.http.post<Response<Users>>(`${this.api}/auth/checkRecoveryToken`, user).pipe(
+    return this.http.post<Users>(`${this.api}/auth/checkRecoveryToken`, user).pipe(
       handleResponse(this.snackBar)
     );
   }
@@ -74,7 +73,7 @@ export class AuthService {
    * @returns An observable with the security token
    */
   public authenticate(entity: UserLogin): Observable<UserLoginToken> {
-    return this.http.post<Response<UserLoginToken>>(`${this.api}/auth/login`, entity).pipe(
+    return this.http.post<UserLoginToken>(`${this.api}/auth/login`, entity).pipe(
       handleResponse(this.snackBar),
       tap((result) => {
         localStorage.setItem(this.key, JSON.stringify(result));
@@ -89,7 +88,7 @@ export class AuthService {
    * @returns true if the email has been sent
    */
   public sendRecovery(email: string): Observable<boolean> {
-    return this.http.get<Response<boolean>>(`${this.api}/auth/sendRecovery`, { params: { email } }).pipe(
+    return this.http.get<boolean>(`${this.api}/auth/sendRecovery`, { params: { email } }).pipe(
       handleResponse(this.snackBar)
     );
   }
@@ -101,7 +100,7 @@ export class AuthService {
    * @returns An observable with the updated user
    */
   public updatePassword(user: Users): Observable<Users> {
-    return this.http.post<Response<Users>>(`${this.api}/auth/updatePassword`, user).pipe(
+    return this.http.post<Users>(`${this.api}/auth/updatePassword`, user).pipe(
       handleResponse(this.snackBar)
     );
   }

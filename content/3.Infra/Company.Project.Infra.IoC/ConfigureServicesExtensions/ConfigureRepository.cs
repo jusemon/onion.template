@@ -1,11 +1,12 @@
 ﻿namespace Company.Project.Infra.IoC.ConfigureServicesExtensions
 {
+    using Data.Contexts;
     using Data.Generics.Base;
     using Domain.Entities.Config;
-    using Domain.Interfaces.Data;
     using Domain.Interfaces.Generics.Base;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Configure Services Extensions class. 
@@ -24,9 +25,12 @@
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 return configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
             });
-            services.AddSingleton<IDbFactory, SQLiteFactory>();
-            services.AddSingleton(typeof(IBaseRepository<>), typeof(SQLiteBaseRepository<>)); // typeof(EFSQLiteBaseRepository<>);
-            //services.AddSingleton(typeof(IBaseRepository<>), typeof(EFSQLiteBaseRepository<>)); // typeof(SQLiteBaseRepository<>);
+            services.AddDbContext<SecurityContext>((provider, options) =>
+            {
+                var dbConfig = provider.GetRequiredService<DatabaseConfig>();
+                options.UseSqlite(dbConfig.ConnectionString);
+            }, ServiceLifetime.Singleton);
+            services.AddSingleton(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         }
 
     }
