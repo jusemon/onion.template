@@ -86,7 +86,7 @@
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -110,7 +110,7 @@
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -133,7 +133,7 @@
 
             modelBuilder.Entity<Permission>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -155,7 +155,7 @@
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -184,7 +184,7 @@
                 entity.HasIndex(e => e.Username)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
