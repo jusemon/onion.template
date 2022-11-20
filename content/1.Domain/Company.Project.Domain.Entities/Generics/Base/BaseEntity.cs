@@ -14,7 +14,7 @@
         /// <value>
         /// The identifier.
         /// </value>
-        public ulong Id { get; set; }
+        public uint Id { get; set; }
 
         /// <summary>
         /// Gets or sets the created at.
@@ -30,7 +30,7 @@
         /// <value>
         /// The created by.
         /// </value>
-        public ulong CreatedBy { get; set; }
+        public uint CreatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the last updated at.
@@ -46,7 +46,7 @@
         /// <value>
         /// The last updated by.
         /// </value>
-        public ulong? LastUpdatedBy { get; set; }
+        public uint? LastUpdatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the created by user.

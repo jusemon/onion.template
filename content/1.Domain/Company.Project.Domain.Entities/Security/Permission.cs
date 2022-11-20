@@ -14,7 +14,7 @@
         /// <value>
         /// The role identifier.
         /// </value>
-        public ulong RoleId { get; set; }
+        public uint RoleId { get; set; }
 
         /// <summary>
         /// Gets or sets the action identifier.
@@ -22,7 +22,7 @@
         /// <value>
         /// The action identifier.
         /// </value>
-        public ulong ActionId { get; set; }
+        public uint ActionId { get; set; }
 
         /// <summary>
         /// Gets or sets the roles.

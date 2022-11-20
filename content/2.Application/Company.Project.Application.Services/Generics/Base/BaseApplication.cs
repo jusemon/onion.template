@@ -43,7 +43,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Task<Response<bool>> Delete(ulong id)
+        public virtual Task<Response<bool>> Delete(uint id)
         {
             return ApplicationExtensions.TryAsync(() => this.baseService.Delete(id));
         }
@@ -62,7 +62,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Task<Response<TEntity?>> Read(ulong id)
+        public virtual Task<Response<TEntity?>> Read(uint id)
         {
             return ApplicationExtensions.TryAsync(() => this.baseService.Read(id));
         }

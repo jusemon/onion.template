@@ -11,6 +11,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class UserService extends BaseService<Users> {
 
   constructor(@Inject('BASE_URL') baseUrl: string, http: HttpClient, snackBar: MatSnackBar, auth: AuthService) {
-    super(`${baseUrl}user`, http, snackBar, auth);
+    super(`${baseUrl}api/user`, http, snackBar, auth);
   }
 }

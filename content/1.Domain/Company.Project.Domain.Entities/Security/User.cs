@@ -39,7 +39,7 @@
         /// <value>
         /// The role identifier.
         /// </value>
-        public ulong RoleId { get; set; }
+        public uint RoleId { get; set; }
 
         /// <summary>
         /// Gets or sets the token.

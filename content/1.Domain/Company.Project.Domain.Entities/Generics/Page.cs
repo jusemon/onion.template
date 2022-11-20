@@ -31,7 +31,7 @@
         /// <value>
         /// The total items.
         /// </value>
-        public ulong TotalItems { get; set; }
+        public uint TotalItems { get; set; }
 
         /// <summary>
         /// Gets or sets the items.

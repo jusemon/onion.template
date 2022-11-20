@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<TEntity?> Read(ulong id);
+        Task<TEntity?> Read(uint id);
 
         /// <summary>
         /// Reads with paged results.
@@ -61,6 +61,6 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        Task<bool> Delete(ulong id);
+        Task<bool> Delete(uint id);
     }
 }

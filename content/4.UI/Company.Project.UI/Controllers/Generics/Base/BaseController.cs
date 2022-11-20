@@ -40,7 +40,7 @@
         [ValidateClaim("[controller].create")]
         public virtual async Task<ActionResult<bool>> Create([FromBody] TEntity entity)
         {
-            entity.CreatedBy = Convert.ToUInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            entity.CreatedBy = Convert.ToUInt32(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var response = await this.baseApplication.Create(entity);
             return GetResponse(response);
         }
@@ -52,7 +52,7 @@
         /// <returns></returns>
         [HttpDelete("{id}")]
         [ValidateClaim("[controller].delete")]
-        public virtual async Task<ActionResult<bool>> Delete(ulong id)
+        public virtual async Task<ActionResult<bool>> Delete(uint id)
         {
             var response = await this.baseApplication.Delete(id);
             return GetResponse(response);
@@ -77,7 +77,7 @@
         /// <returns></returns>
         [HttpGet("{id}")]
         [ValidateClaim("[controller].read")]
-        public virtual async Task<ActionResult<TEntity?>> Read(ulong id)
+        public virtual async Task<ActionResult<TEntity?>> Read(uint id)
         {
             var response = await this.baseApplication.Read(id);
             return GetResponse(response);
@@ -108,7 +108,7 @@
         [ValidateClaim("[controller].update")]
         public virtual async Task<ActionResult<bool>> Update([FromBody] TEntity entity)
         {
-            entity.LastUpdatedBy = Convert.ToUInt64(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            entity.LastUpdatedBy = Convert.ToUInt32(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var response = await this.baseApplication.Update(entity);
             return GetResponse(response);
 

@@ -54,7 +54,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Task<bool> Delete(ulong id)
+        public virtual Task<bool> Delete(uint id)
         {
             return this.baseRepository.Delete(id);
         }
@@ -83,7 +83,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Task<TEntity?> Read(ulong id)
+        public virtual Task<TEntity?> Read(uint id)
         {
             return this.baseRepository.Read(id);
         }

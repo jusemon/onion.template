@@ -3,6 +3,7 @@ using System.Text;
 using Company.Project.Domain.Entities.Config;
 using Company.Project.Infra.Data.Contexts;
 using Company.Project.Infra.IoC.ConfigureServicesExtensions;
+using Company.Project.Infra.Utils.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -91,6 +92,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapFallbackToFile("index.html");;
+app.MapFallbackToFile("index.html"); ;
 
 app.Run();

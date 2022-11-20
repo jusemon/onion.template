@@ -27,6 +27,6 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Task<User> CheckRecoveryToken(ulong id, string token);
+        Task<User> CheckRecoveryToken(uint id, string token);
     }
 }

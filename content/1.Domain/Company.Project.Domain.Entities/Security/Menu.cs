@@ -38,7 +38,7 @@
         /// <value>
         /// The action identifier.
         /// </value>
-        public ulong ActionId { get; set; }
+        public uint ActionId { get; set; }
 
         /// <summary>
         /// Gets or sets the permissions.

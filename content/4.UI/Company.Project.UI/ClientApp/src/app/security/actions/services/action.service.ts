@@ -10,6 +10,6 @@ import { BaseService } from 'src/app/shared/utils/base-service';
 })
 export class ActionService extends BaseService<Actions> {
   constructor(@Inject('BASE_URL') baseUrl: string, http: HttpClient, snackBar: MatSnackBar, auth: AuthService) {
-    super(`${baseUrl}action`, http, snackBar, auth);
+    super(`${baseUrl}api/activity`, http, snackBar, auth);
   }
 }

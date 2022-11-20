@@ -9,6 +9,7 @@
     using System.ComponentModel;
     using System.Linq.Expressions;
     using Utils.Exceptions;
+    using System.Reflection;
 
     /// <summary>
     /// Base Repository class. 
@@ -91,7 +92,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Task<TEntity?> Read(ulong id)
+        public virtual Task<TEntity?> Read(uint id)
         {
             return this.Try(async () =>
             {
@@ -114,8 +115,8 @@
             {
                 var con = this.securityContext;
                 var offset = pageSize * pageIndex;
-                var totalItems = (ulong)await con.Set<TEntity>().AsNoTracking().LongCountAsync();
-                var items = await con.Set<TEntity>().SortBy(this.props, sortBy, isAsc).Skip((int)offset).Take((int)pageSize)
+                var totalItems = (uint)await con.Set<TEntity>().AsNoTracking().LongCountAsync();
+                var items = await con.Set<TEntity>().SortBy(this.props, sortBy, isAsc)!.Skip((int)offset).Take((int)pageSize)
                     .Include(e => e.CreatedByUser)
                     .Include(e => e.LastUpdatedByUser).AsNoTracking().ToListAsync();
                 return new Page<TEntity>
@@ -155,7 +156,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Task<bool> Delete(ulong id)
+        public virtual Task<bool> Delete(uint id)
         {
             return this.Try(async () =>
             {
@@ -172,7 +173,7 @@
         /// </summary>
         /// <param name="ids">The ids.</param>
         /// <returns></returns>
-        public virtual Task<bool> Delete(IEnumerable<ulong> ids)
+        public virtual Task<bool> Delete(IEnumerable<uint> ids)
         {
             return this.Try(async () =>
             {
@@ -217,14 +218,23 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public static IOrderedQueryable<TEntity> SortBy<TEntity>(this IQueryable<TEntity> q, PropertyDescriptorCollection props, string? sortBy, bool isAsc) where TEntity : BaseEntity
+        public static IOrderedQueryable<TEntity>? SortBy<TEntity>(this IQueryable<TEntity> q, PropertyDescriptorCollection props, string? sortBy, bool isAsc) where TEntity : BaseEntity
         {
             if (!string.IsNullOrEmpty(sortBy))
             {
                 var prop = props.Find(sortBy, true);
                 if (prop != null)
                 {
-                    return isAsc ? q.OrderBy(e => prop.GetValue(e)) : q.OrderByDescending(e => prop.GetValue(e));
+                    var type = typeof(TEntity);
+                    var parameter = Expression.Parameter(type, prop.Name);                    
+                    var lambda = Expression.Lambda(Expression.Property(parameter, prop.Name), parameter);
+                    var baseExpression = q.Expression;
+
+                    var orderByCall = Expression.Call(typeof(Queryable), isAsc ? "OrderBy" : "OrderByDescending", new Type[] { type, prop.PropertyType }, new Expression[] { baseExpression, lambda });
+
+                    return  (q.Provider.CreateQuery<TEntity>(orderByCall) as IOrderedQueryable<TEntity>);
+
+                    // return isAsc ? q.OrderBy(e => prop.GetValue(e)) : q.OrderByDescending(e => prop.GetValue(e));
                 }
             }
             return q.OrderBy(e => e.Id);

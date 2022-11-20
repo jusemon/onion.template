@@ -39,6 +39,11 @@
         private readonly IBaseRepository<Entities.Security.Activity> actionRepository;
 
         /// <summary>
+        /// The role repository
+        /// </summary>
+        private readonly IBaseRepository<Entities.Security.Role> roleRepository;
+
+        /// <summary>
         /// The authentication configuration
         /// </summary>
         private readonly AuthConfig authConfig;
@@ -48,18 +53,21 @@
         /// </summary>
         /// <param name="baseRepository">The base repository.</param>
         /// <param name="permissionRepository">The permission repository.</param>
+        /// <param name="roleRepository">The role repository.</param>
         /// <param name="actionRepository">The action repository.</param>
         /// <param name="authConfig">The authentication configuration.</param>
         public UserService(
             IBaseRepository<User> baseRepository,
             IBaseRepository<Permission> permissionRepository,
             IBaseRepository<Activity> actionRepository,
+            IBaseRepository<Role> roleRepository,
             AuthConfig authConfig) : base(baseRepository)
         {
             this.baseRepository = baseRepository;
             this.authConfig = authConfig;
             this.actionRepository = actionRepository;
             this.permissionRepository = permissionRepository;
+            this.roleRepository = roleRepository;
         }
 
         /// <summary>
@@ -79,7 +87,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public override async Task<User?> Read(ulong id)
+        public override async Task<User?> Read(uint id)
         {
             var user = await base.Read(id);
             if (user != null)
@@ -187,7 +195,7 @@
         /// <exception cref="AppException">Enlace de recuperación inválido.
         /// or
         /// El enlace de recuperación ha expirado.</exception>
-        public async Task<User> CheckRecoveryToken(ulong id, string token)
+        public async Task<User> CheckRecoveryToken(uint id, string token)
         {
             try
             {
@@ -261,11 +269,13 @@
                             new Claim(ClaimTypes.Name, user.Username),
                             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                         };
+            var role = (await this.roleRepository.Read(user.RoleId))!;
             var permissions = (await this.permissionRepository.Read((p) => p.RoleId == user.RoleId)).Select(p => p.ActionId).ToList();
             var customClaims = (await this.actionRepository.Read((a) => permissions.Contains(a.Id))).Select(p =>
                 new Claim(CustomClaimTypes.Permission, p.Name)
             );
             claims.AddRange(customClaims);
+            claims.Add(new Claim(CustomClaimTypes.IsAdmin, role.IsAdmin.ToString()));
             return claims;
         }
     }
