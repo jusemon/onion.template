@@ -2,6 +2,7 @@
 {
     using Application.Interfaces.Generics;
     using Application.Interfaces.Security;
+    using AutoMapper;
     using Company.Project.Application.Interfaces.Security.DTOs;
     using Domain.Entities.Security;
     using Microsoft.AspNetCore.Authorization;
@@ -10,9 +11,9 @@
     using System;
 
     /// <summary>
-    /// User Controller class. 
+    /// Auth Controller class. 
     /// </summary>
-    /// <seealso cref="Generics.Base.BaseController{User}" />
+    /// <seealso cref="ControllerBase" />
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -23,12 +24,19 @@
         private readonly IAuthApplication authApplication;
 
         /// <summary>
+        /// The automapper instance.
+        /// </summary>
+        private readonly IMapper mapper;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
         /// <param name="authApplication">The user application.</param>
-        public AuthController(IAuthApplication authApplication)
+        /// <param name="mapper">The automapper instance.</param>
+        public AuthController(IAuthApplication authApplication, IMapper mapper)
         {
             this.authApplication = authApplication;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -80,10 +88,11 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("UpdatePassword")]
-        public async Task<ActionResult<User>> UpdatePassword([FromBody] User user)
+        public async Task<ActionResult<User>> UpdatePassword([FromBody] UserDto user)
         {
+            var entity = this.mapper.Map<User>(user);
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            var result = await this.authApplication.UpdatePassword(user, uri);
+            var result = await this.authApplication.UpdatePassword(entity, uri);
             return GetResponse(result);
         }
 

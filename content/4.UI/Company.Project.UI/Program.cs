@@ -1,9 +1,7 @@
 using System.Reflection;
 using System.Text;
 using Company.Project.Domain.Entities.Config;
-using Company.Project.Infra.Data.Contexts;
 using Company.Project.Infra.IoC.ConfigureServicesExtensions;
-using Company.Project.Infra.Utils.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +12,7 @@ var authConfig = builder.Configuration.GetSection(nameof(AuthConfig)).Get<AuthCo
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.ConfigureAutoMapper();
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 builder.Services.ConfigureApplication();

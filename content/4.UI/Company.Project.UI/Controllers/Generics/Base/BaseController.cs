@@ -2,6 +2,7 @@
 {
     using Application.Interfaces.Generics;
     using Application.Interfaces.Generics.Base;
+    using AutoMapper;
     using Domain.Entities.Generics;
     using Domain.Entities.Generics.Base;
     using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,12 @@
     /// <summary>
     /// Base Controller class. 
     /// </summary>
+    /// <typeparam name="TDto">The type of the DTO.</typeparam>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
-    public class BaseController<TEntity> : ControllerBase where TEntity : BaseEntity, new()
+    public class BaseController<TDto, TEntity> : ControllerBase
+        where TDto : new()
+        where TEntity : BaseEntity, new()
     {
         /// <summary>
         /// The base application
@@ -23,23 +27,31 @@
         private readonly IBaseApplication<TEntity> baseApplication;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseController{TEntity}"/> class.
+        /// The automapper instance
+        /// </summary>
+        private readonly IMapper mapper;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseController{TDto, TEntity}"/> class.
         /// </summary>
         /// <param name="baseApplication">The base application.</param>
-        public BaseController(IBaseApplication<TEntity> baseApplication)
+        /// <param name="mapper">The automapper instance.</param>
+        public BaseController(IBaseApplication<TEntity> baseApplication, IMapper mapper)
         {
             this.baseApplication = baseApplication;
+            this.mapper = mapper;
         }
 
         /// <summary>
         /// Creates the specified entity.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="dto">The entity.</param>
         /// <returns></returns>
         [HttpPost]
         [ValidateClaim("[controller].create")]
-        public virtual async Task<ActionResult<bool>> Create([FromBody] TEntity entity)
+        public virtual async Task<ActionResult<bool>> Create([FromBody] TDto dto)
         {
+            var entity = this.mapper.Map<TEntity>(dto);
             entity.CreatedBy = Convert.ToUInt32(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var response = await this.baseApplication.Create(entity);
             return GetResponse(response);
@@ -102,16 +114,18 @@
         /// <summary>
         /// Updates the specified entity.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="id">The entity identifier.</param>
+        /// <param name="dto">The entity.</param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPut("{id}")]
         [ValidateClaim("[controller].update")]
-        public virtual async Task<ActionResult<bool>> Update([FromBody] TEntity entity)
+        public virtual async Task<ActionResult<bool>> Update(uint id, [FromBody] TDto dto)
         {
+            var entity = this.mapper.Map<TEntity>(dto);
+            entity.Id = id;
             entity.LastUpdatedBy = Convert.ToUInt32(this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var response = await this.baseApplication.Update(entity);
             return GetResponse(response);
-
         }
 
         /// <summary>
