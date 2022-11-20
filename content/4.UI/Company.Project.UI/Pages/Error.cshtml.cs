@@ -21,10 +21,19 @@ public class ErrorModel : PageModel
         _logger = logger;
     }
 
+    /// <summary>
+    /// Request Identifier.
+    /// </summary>/
     public string? RequestId { get; set; }
 
+    /// <summary>
+    /// Bool that indicates if show Request Identifier when is available.
+    /// </summary>
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
+    /// <summary>
+    /// On Get method that sets the Request Identifier
+    /// </summary>
     public void OnGet()
     {
         RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;

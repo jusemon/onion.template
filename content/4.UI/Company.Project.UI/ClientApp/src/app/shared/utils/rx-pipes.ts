@@ -6,6 +6,7 @@ import { ErrorMessage } from '../generics/models';
 
 export function handleResponse<TEntity>(snackBar?: MatSnackBar) {
     return catchError((err: HttpErrorResponse, _: Observable<TEntity>) => {
+        console.log('handleResponse', err)
         const response = err.error as ErrorMessage;
         if (snackBar) {
             snackBar.open(response.exceptionMessage, 'Dismiss', {

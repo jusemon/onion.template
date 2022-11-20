@@ -9,14 +9,18 @@ import { tap } from 'rxjs/operators';
 import { handleResponse } from '../shared/utils/rx-pipes';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   api: string;
   key: string;
   isAuthenticated = new BehaviorSubject(false);
 
-  constructor(@Inject('BASE_URL') baseUrl: string, private http: HttpClient, private snackBar: MatSnackBar) {
+  constructor(
+    @Inject('BASE_URL') baseUrl: string,
+    private http: HttpClient,
+    private snackBar: MatSnackBar
+  ) {
     this.api = `${baseUrl}api`;
     this.key = environment.key;
     this.isAuthenticated.next(localStorage.getItem(this.key) != null);
@@ -30,13 +34,15 @@ export class AuthService {
   protected getOptions() {
     return {
       headers: {
-        Authorization: `Bearer ${this.getToken()}`
-      }
+        Authorization: `Bearer ${this.getToken()}`,
+      },
     };
   }
 
   public clearToken() {
-    this.isAuthenticated.next(false);
+    if (this.isAuthenticated.getValue()) {
+      this.isAuthenticated.next(false);
+    }
     localStorage.clear();
   }
 
@@ -61,9 +67,9 @@ export class AuthService {
    * @returns A observable with the info of the user
    */
   public checkRecoveryToken(user: UserLoginToken): Observable<Users> {
-    return this.http.post<Users>(`${this.api}/auth/checkRecoveryToken`, user).pipe(
-      handleResponse(this.snackBar)
-    );
+    return this.http
+      .post<Users>(`${this.api}/auth/checkRecoveryToken`, user)
+      .pipe(handleResponse(this.snackBar));
   }
 
   /**
@@ -73,12 +79,15 @@ export class AuthService {
    * @returns An observable with the security token
    */
   public authenticate(entity: UserLogin): Observable<UserLoginToken> {
-    return this.http.post<UserLoginToken>(`${this.api}/auth/login`, entity).pipe(
-      handleResponse(this.snackBar),
-      tap((result) => {
-        localStorage.setItem(this.key, JSON.stringify(result));
-        this.isAuthenticated.next(true);
-      }));
+    return this.http
+      .post<UserLoginToken>(`${this.api}/auth/login`, entity)
+      .pipe(
+        handleResponse(this.snackBar),
+        tap((result) => {
+          localStorage.setItem(this.key, JSON.stringify(result));
+          this.isAuthenticated.next(true);
+        })
+      );
   }
 
   /**
@@ -88,9 +97,9 @@ export class AuthService {
    * @returns true if the email has been sent
    */
   public sendRecovery(email: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.api}/auth/sendRecovery`, { params: { email } }).pipe(
-      handleResponse(this.snackBar)
-    );
+    return this.http
+      .get<boolean>(`${this.api}/auth/sendRecovery`, { params: { email } })
+      .pipe(handleResponse(this.snackBar));
   }
 
   /**
@@ -100,8 +109,8 @@ export class AuthService {
    * @returns An observable with the updated user
    */
   public updatePassword(user: Users): Observable<Users> {
-    return this.http.post<Users>(`${this.api}/auth/updatePassword`, user).pipe(
-      handleResponse(this.snackBar)
-    );
+    return this.http
+      .post<Users>(`${this.api}/auth/updatePassword`, user)
+      .pipe(handleResponse(this.snackBar));
   }
 }
