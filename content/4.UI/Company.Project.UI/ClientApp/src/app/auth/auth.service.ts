@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { environment } from 'src/environments/environment';
@@ -16,8 +16,8 @@ export class AuthService {
   key: string;
   isAuthenticated = new BehaviorSubject(false);
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) {
-    this.api = environment.api;
+  constructor(@Inject('BASE_URL') baseUrl: string, private http: HttpClient, private snackBar: MatSnackBar) {
+    this.api = `${baseUrl}api`;
     this.key = environment.key;
     this.isAuthenticated.next(localStorage.getItem(this.key) != null);
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BaseService } from 'src/app/shared/utils/base-service';
 import { Users } from '../users.models';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 })
 export class UserService extends BaseService<Users> {
 
-  constructor(http: HttpClient, snackBar: MatSnackBar, auth: AuthService) {
-    super(http, 'user', snackBar, auth);
+  constructor(@Inject('BASE_URL') baseUrl: string, http: HttpClient, snackBar: MatSnackBar, auth: AuthService) {
+    super(`${baseUrl}user`, http, snackBar, auth);
   }
 }

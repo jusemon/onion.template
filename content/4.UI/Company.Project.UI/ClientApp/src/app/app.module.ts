@@ -14,7 +14,7 @@ import { InterceptorService } from './shared/services/interceptor/interceptor.se
     AppComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     BrowserAnimationsModule,
     AppRoutingModule,
     NavigationModule,

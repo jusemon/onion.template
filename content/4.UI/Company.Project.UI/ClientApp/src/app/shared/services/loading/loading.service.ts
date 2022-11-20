@@ -23,7 +23,7 @@ export class LoadingService {
       return;
     }
     this.componentRef = rootViewContainerRef.createComponent(LoadingComponent);
-    const domElem = (this.componentRef.hostView as EmbeddedViewRef<any>)
+    const domElem = (this.componentRef?.hostView as EmbeddedViewRef<any>)
        .rootNodes[0] as HTMLElement;
     document.body.appendChild(domElem);
     this.displayed = true;
