@@ -10,11 +10,9 @@ export interface Base {
     lastUpdatedByUser?: Users;
 }
 
-export interface Response<TEntity> {
+export interface ErrorMessage {
     exceptionMessage: string;
     exceptionType: string;
-    result: TEntity;
-    isSuccess: boolean;
 }
 
 export interface Page<TEntity> {

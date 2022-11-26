@@ -33,7 +33,7 @@
         /// <value>
         /// The actions.
         /// </value>
-        public virtual DbSet<Actions> Actions { get; set; } = null!;
+        public virtual DbSet<Activity> Activities { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the menus.
@@ -41,7 +41,7 @@
         /// <value>
         /// The menus.
         /// </value>
-        public virtual DbSet<Menus> Menus { get; set; } = null!;
+        public virtual DbSet<Menu> Menus { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the permissions.
@@ -49,7 +49,7 @@
         /// <value>
         /// The permissions.
         /// </value>
-        public virtual DbSet<Permissions> Permissions { get; set; } = null!;
+        public virtual DbSet<Permission> Permissions { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the roles.
@@ -57,7 +57,7 @@
         /// <value>
         /// The roles.
         /// </value>
-        public virtual DbSet<Roles> Roles { get; set; } = null!;
+        public virtual DbSet<Role> Roles { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the users.
@@ -65,7 +65,7 @@
         /// <value>
         /// The users.
         /// </value>
-        public virtual DbSet<Users> Users { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
 
         /// <summary>
         /// Override this method to further configure the model that was discovered by convention from the entity types
@@ -81,12 +81,12 @@
         /// </remarks>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Actions>(entity =>
+            modelBuilder.Entity<Activity>(entity =>
             {
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -105,12 +105,12 @@
                 entity.HasOne(e => e.LastUpdatedByUser).WithMany().HasForeignKey(e => e.LastUpdatedBy);
             });
 
-            modelBuilder.Entity<Menus>(entity =>
+            modelBuilder.Entity<Menu>(entity =>
             {
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -131,9 +131,9 @@
                 entity.HasOne(d => d.LastUpdatedByUser).WithMany().HasForeignKey(d => d.LastUpdatedBy);
             });
 
-            modelBuilder.Entity<Permissions>(entity =>
+            modelBuilder.Entity<Permission>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -150,12 +150,12 @@
                 entity.HasOne(e => e.LastUpdatedByUser).WithMany().HasForeignKey(e => e.LastUpdatedBy);
             });
 
-            modelBuilder.Entity<Roles>(entity =>
+            modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasIndex(e => e.Name)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()
@@ -176,7 +176,7 @@
                 entity.HasOne(e => e.LastUpdatedByUser).WithMany().HasForeignKey(e => e.LastUpdatedBy);
             });
 
-            modelBuilder.Entity<Users>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasIndex(e => e.Email)
                     .IsUnique();
@@ -184,7 +184,7 @@
                 entity.HasIndex(e => e.Username)
                     .IsUnique();
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedAt)
                     .IsRequired()

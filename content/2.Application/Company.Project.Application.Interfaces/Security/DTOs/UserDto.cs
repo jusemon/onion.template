@@ -1,14 +1,9 @@
-﻿namespace Company.Project.Domain.Entities.Security
+﻿namespace Company.Project.Application.Interfaces.Security.DTOs
 {
-    using Dapper.Contrib.Extensions;
-    using Generics.Base;
-
     /// <summary>
     /// User class.
     /// </summary>
-    /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    [Table("Users")]
-    public class Users : BaseEntity
+    public class UserDto
     {
         /// <summary>
         /// Gets or sets the username.
@@ -40,24 +35,6 @@
         /// <value>
         /// The role identifier.
         /// </value>
-        public long RoleId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the token.
-        /// </summary>
-        /// <value>
-        /// The token.
-        /// </value>
-        [Computed]
-        public string? Token { get; set; }
-
-        /// <summary>
-        /// Gets or sets the roles.
-        /// </summary>
-        /// <value>
-        /// The roles.
-        /// </value>
-        [Computed]
-        public virtual Roles? Role { get; set; }
+        public uint RoleId { get; set; }
     }
 }

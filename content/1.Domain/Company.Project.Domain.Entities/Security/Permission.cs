@@ -1,14 +1,12 @@
 ﻿namespace Company.Project.Domain.Entities.Security
 {
-    using Dapper.Contrib.Extensions;
     using Generics.Base;
 
     /// <summary>
     /// Permission class. 
     /// </summary>
     /// <seealso cref="Company.Project.Domain.Entities.Generics.Base.BaseEntity" />
-    [Table("Permissions")]
-    public class Permissions : BaseEntity
+    public class Permission : BaseEntity
     {
         /// <summary>
         /// Gets or sets the role identifier.
@@ -16,7 +14,7 @@
         /// <value>
         /// The role identifier.
         /// </value>
-        public long RoleId { get; set; }
+        public uint RoleId { get; set; }
 
         /// <summary>
         /// Gets or sets the action identifier.
@@ -24,7 +22,7 @@
         /// <value>
         /// The action identifier.
         /// </value>
-        public long ActionId { get; set; }
+        public uint ActionId { get; set; }
 
         /// <summary>
         /// Gets or sets the roles.
@@ -32,8 +30,7 @@
         /// <value>
         /// The roles.
         /// </value>
-        [Computed]
-        public virtual Roles? Role { get; set; }
+        public virtual Role? Role { get; set; }
 
         /// <summary>
         /// Gets or sets the actions.
@@ -41,7 +38,6 @@
         /// <value>
         /// The actions.
         /// </value>
-        [Computed]
-        public virtual Actions? Action { get; set; }
+        public virtual Activity? Action { get; set; }
     }
 }

@@ -4,7 +4,6 @@
 
 export const environment = {
   production: false,
-  api: `${document.getElementsByTagName('base')[0].href}api`,
   key: 'Company.Project'
 };
 

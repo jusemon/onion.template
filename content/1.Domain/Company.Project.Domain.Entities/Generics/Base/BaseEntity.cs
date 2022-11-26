@@ -2,7 +2,6 @@
 {
     using System;
     using Security;
-    using Dapper.Contrib.Extensions;
 
     /// <summary>
     /// Base Entity class. 
@@ -15,7 +14,7 @@
         /// <value>
         /// The identifier.
         /// </value>
-        public long Id { get; set; }
+        public uint Id { get; set; }
 
         /// <summary>
         /// Gets or sets the created at.
@@ -31,7 +30,7 @@
         /// <value>
         /// The created by.
         /// </value>
-        public long CreatedBy { get; set; }
+        public uint CreatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the last updated at.
@@ -47,7 +46,7 @@
         /// <value>
         /// The last updated by.
         /// </value>
-        public long? LastUpdatedBy { get; set; }
+        public uint? LastUpdatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the created by user.
@@ -55,8 +54,7 @@
         /// <value>
         /// The created by user.
         /// </value>
-        [Computed]
-        public virtual Users? CreatedByUser { get; set; }
+        public virtual User? CreatedByUser { get; set; }
 
         /// <summary>
         /// Gets or sets the last updated by user.
@@ -64,7 +62,6 @@
         /// <value>
         /// The last updated by user.
         /// </value>
-        [Computed]
-        public virtual Users? LastUpdatedByUser { get; set; }
+        public virtual User? LastUpdatedByUser { get; set; }
     }
 }

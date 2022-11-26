@@ -7,7 +7,7 @@
     /// <summary>
     /// User Application interface. 
     /// </summary>
-    /// <seealso cref="Company.Project.Application.Interfaces.Generics.Base.IBaseApplication{Company.Project.Domain.Entities.Security.Users}" />
+    /// <seealso cref="Company.Project.Application.Interfaces.Generics.Base.IBaseApplication{Company.Project.Domain.Entities.Security.User}" />
     public interface IAuthApplication
     {
         /// <summary>
@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Response<UserLoginToken> Login(UserLogin user);
+        Task<Response<UserLoginToken>> Login(UserLogin user);
 
         /// <summary>
         /// Sends the recovery email.
@@ -23,14 +23,14 @@
         /// <param name="email">The email.</param>
         /// <param name="uri">The URI.</param>
         /// <returns></returns>
-        Response<bool> SendRecovery(string email, string uri);
+        Task<Response<bool>> SendRecovery(string email, string uri);
 
         /// <summary>
         /// Checks the recovery token.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        Response<Users> CheckRecoveryToken(UserLoginToken user);
+        Task<Response<User>> CheckRecoveryToken(UserLoginToken user);
 
         /// <summary>
         /// Updates the password.
@@ -38,6 +38,6 @@
         /// <param name="user">The user.</param>
         /// <param name="uri">The URI.</param>
         /// <returns></returns>
-        Response<Users> UpdatePassword(Users user, string uri);
+        Task<Response<User>> UpdatePassword(User user, string uri);
     }
 }

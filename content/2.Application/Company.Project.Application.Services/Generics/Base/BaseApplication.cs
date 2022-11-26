@@ -33,9 +33,9 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public virtual Response<bool> Create(TEntity entity)
+        public virtual Task<Response<bool>> Create(TEntity entity)
         {
-            return ApplicationExtensions.Try(() => this.baseService.Create(entity));
+            return ApplicationExtensions.TryAsync(() => this.baseService.Create(entity));
         }
 
         /// <summary>
@@ -43,18 +43,18 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Response<bool> Delete(int id)
+        public virtual Task<Response<bool>> Delete(uint id)
         {
-            return ApplicationExtensions.Try(() => this.baseService.Delete(id));
+            return ApplicationExtensions.TryAsync(() => this.baseService.Delete(id));
         }
 
         /// <summary>
         /// Reads all.
         /// </summary>
         /// <returns></returns>
-        public virtual Response<IEnumerable<TEntity>> Read()
+        public virtual Task<Response<IEnumerable<TEntity>>> Read()
         {
-            return ApplicationExtensions.Try(() => this.baseService.Read());
+            return ApplicationExtensions.TryAsync(() => this.baseService.Read());
         }
 
         /// <summary>
@@ -62,9 +62,9 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual Response<TEntity> Read(int id)
+        public virtual Task<Response<TEntity?>> Read(uint id)
         {
-            return ApplicationExtensions.Try(() => this.baseService.Read(id));
+            return ApplicationExtensions.TryAsync(() => this.baseService.Read(id));
         }
 
         /// <summary>
@@ -75,9 +75,9 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="isAsc">if set to <c>true</c> [is asc].</param>
         /// <returns></returns>
-        public virtual Response<Page<TEntity>> Read(int pageIndex, int pageSize, string? sortBy = null, bool isAsc = true)
+        public virtual Task<Response<Page<TEntity>>> Read(uint pageIndex, uint pageSize, string? sortBy = null, bool isAsc = true)
         {
-            return ApplicationExtensions.Try(() => this.baseService.Read(pageIndex, pageSize, sortBy, isAsc));
+            return ApplicationExtensions.TryAsync(() => this.baseService.Read(pageIndex, pageSize, sortBy, isAsc));
         }
 
         /// <summary>
@@ -85,9 +85,9 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public virtual Response<bool> Update(TEntity entity)
+        public virtual Task<Response<bool>> Update(TEntity entity)
         {
-            return ApplicationExtensions.Try(() => this.baseService.Update(entity));
+            return ApplicationExtensions.TryAsync(() => this.baseService.Update(entity));
         }
     }
 }

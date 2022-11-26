@@ -1,22 +1,18 @@
-﻿using Company.Project.Domain.Entities.Config;
-using Company.Project.Infra.Data.Contexts;
+using System.Reflection;
+using System.Text;
+using Company.Project.Domain.Entities.Config;
 using Company.Project.Infra.IoC.ConfigureServicesExtensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var authConfig = builder.Configuration.GetSection(nameof(AuthConfig)).Get<AuthConfig>();
-var dbConfig = builder.Configuration.GetSection(nameof(DatabaseConfig)).Get<DatabaseConfig>();
 
-builder.Services.AddControllers();
-builder.Services.AddSpaStaticFiles(c => c.RootPath = "ClientApp/dist/ClientApp");
-builder.Services.AddDbContext<SecurityContext>(options => options.UseSqlite(dbConfig.ConnectionString), ServiceLifetime.Singleton);
+// Add services to the container.
 
+builder.Services.AddControllersWithViews();
+builder.Services.ConfigureAutoMapper();
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 builder.Services.ConfigureApplication();
@@ -24,10 +20,7 @@ builder.Services.Configure<MvcNewtonsoftJsonOptions>(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
-builder.Services.Configure<MvcNewtonsoftJsonOptions>(x =>
-            {
-                x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            });
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,6 +38,7 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "AppTitle API", Version = "v1" });
@@ -71,35 +65,32 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-}
-else
-{
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+bool tryParse = Boolean.TryParse(Environment.GetEnvironmentVariable("ENABLE_SWAGGER"), out bool enableSwagger);
+
+if (app.Environment.IsDevelopment() || (tryParse && enableSwagger))
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseSpaStaticFiles();
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
-app.UseEndpoints(endpoints => endpoints.MapControllers());
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppTitle V1");
-});
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
 
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "ClientApp";
-    if (app.Environment.IsDevelopment())
-    {
-        spa.UseAngularCliServer(npmScript: "start");
-    }
-});
+app.MapFallbackToFile("index.html"); ;
 
 app.Run();

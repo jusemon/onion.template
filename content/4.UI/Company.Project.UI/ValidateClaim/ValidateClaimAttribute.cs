@@ -39,7 +39,8 @@
         {
             var controller = (context.ActionDescriptor as ControllerActionDescriptor)!.ControllerName.ToLower();
             var claimValue = this.Template.Replace("[controller]", controller);
-            if (context.HttpContext.User.HasClaim(claim =>
+            var isAdmin = context.HttpContext.User.HasClaim(claim => claim.Type == CustomClaimTypes.IsAdmin && bool.Parse(claim.Value));
+            if (isAdmin || context.HttpContext.User.HasClaim(claim =>
                 claim.Type == CustomClaimTypes.Permission && claim.Value == claimValue))
             {
                 return;

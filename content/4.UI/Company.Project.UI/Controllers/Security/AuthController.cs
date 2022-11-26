@@ -2,6 +2,7 @@
 {
     using Application.Interfaces.Generics;
     using Application.Interfaces.Security;
+    using AutoMapper;
     using Company.Project.Application.Interfaces.Security.DTOs;
     using Domain.Entities.Security;
     using Microsoft.AspNetCore.Authorization;
@@ -10,9 +11,9 @@
     using System;
 
     /// <summary>
-    /// User Controller class. 
+    /// Auth Controller class. 
     /// </summary>
-    /// <seealso cref="Generics.Base.BaseController{User}" />
+    /// <seealso cref="ControllerBase" />
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -23,12 +24,19 @@
         private readonly IAuthApplication authApplication;
 
         /// <summary>
+        /// The automapper instance.
+        /// </summary>
+        private readonly IMapper mapper;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
         /// <param name="authApplication">The user application.</param>
-        public AuthController(IAuthApplication authApplication)
+        /// <param name="mapper">The automapper instance.</param>
+        public AuthController(IAuthApplication authApplication, IMapper mapper)
         {
             this.authApplication = authApplication;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -38,9 +46,10 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("Login")]
-        public virtual ActionResult<Response<UserLoginToken>> Login([FromBody] UserLogin entity)
+        public virtual async Task<ActionResult<UserLoginToken>> Login([FromBody] UserLogin entity)
         {
-            return this.authApplication.Login(entity);
+            var result = await this.authApplication.Login(entity);
+            return GetResponse(result);
         }
 
 
@@ -51,11 +60,12 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("SendRecovery")]
-        public Response<bool> SendRecovery(string email)
+        public async Task<ActionResult<bool>> SendRecovery(string email)
         {
 
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            return this.authApplication.SendRecovery(email, uri);
+            var result = await this.authApplication.SendRecovery(email, uri);
+            return GetResponse(result);
         }
 
         /// <summary>
@@ -65,9 +75,10 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("CheckRecoveryToken")]
-        public Response<Users> CheckRecoveryToken([FromBody] UserLoginToken user)
+        public async Task<ActionResult<User>> CheckRecoveryToken([FromBody] UserLoginToken user)
         {
-            return this.authApplication.CheckRecoveryToken(user);
+            var result = await this.authApplication.CheckRecoveryToken(user);
+            return GetResponse(result);
         }
 
         /// <summary>
@@ -77,10 +88,32 @@
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("UpdatePassword")]
-        public Response<Users> UpdatePassword([FromBody] Users user)
+        public async Task<ActionResult<User>> UpdatePassword([FromBody] UserDto user)
         {
+            var entity = this.mapper.Map<User>(user);
             var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            return this.authApplication.UpdatePassword(user, uri);
+            var result = await this.authApplication.UpdatePassword(entity, uri);
+            return GetResponse(result);
+        }
+
+        /// <summary>
+        /// Get the result from the response when is success otherwise a BadRequest
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <returns></returns>
+        protected ActionResult<TResult> GetResponse<TResult>(Response<TResult> response)
+        {
+            if (response.IsSuccess)
+            {
+                return response.Result!;
+            }
+
+            if (response.ExceptionType == Infra.Utils.Exceptions.AppExceptionTypes.Database && response.ExceptionMessage!.Contains("Not found"))
+            {
+                return NotFound(new { response.ExceptionType, response.ExceptionMessage });
+            }
+
+            return BadRequest(new { response.ExceptionType, response.ExceptionMessage });
         }
     }
 }

@@ -15,7 +15,7 @@
         /// <value>
         /// The index of the page.
         /// </value>
-        public int PageIndex { get; set; }
+        public uint PageIndex { get; set; }
 
         /// <summary>
         /// Gets or sets the size of the page.
@@ -23,7 +23,7 @@
         /// <value>
         /// The size of the page.
         /// </value>
-        public int PageSize { get; set; }
+        public uint PageSize { get; set; }
 
         /// <summary>
         /// Gets or sets the total items.
@@ -31,7 +31,7 @@
         /// <value>
         /// The total items.
         /// </value>
-        public long TotalItems { get; set; }
+        public uint TotalItems { get; set; }
 
         /// <summary>
         /// Gets or sets the items.

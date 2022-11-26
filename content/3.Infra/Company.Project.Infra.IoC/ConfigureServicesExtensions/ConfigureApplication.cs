@@ -4,6 +4,7 @@
     using Application.Interfaces.Security;
     using Application.Services.Generics.Base;
     using Application.Services.Security;
+    using Company.Project.Domain.Entities.Security;
     using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>

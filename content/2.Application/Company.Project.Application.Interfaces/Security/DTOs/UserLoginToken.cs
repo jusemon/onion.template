@@ -11,7 +11,7 @@
         /// <value>
         /// The identifier.
         /// </value>
-        public long Id { get; set; }
+        public uint Id { get; set; }
 
         /// <summary>
         /// Gets or sets the username.
